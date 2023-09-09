@@ -39,6 +39,7 @@ limitations under the License.
       position: relative;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 </head>
 <body>
   <!-- Statistics display (not visible in this code) -->
@@ -71,6 +72,9 @@ limitations under the License.
       <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
       <!-- Numerical value display centered in the middle of the screen -->
       <div id="numerical-value-display" style="position: absolute; top: 25%; left: 40%; font-size: 24px; color: red;">ForcePlate value: <span id="numerical-value">0</span> Unit?</div>
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <canvas id="forcePlateChart" width="400" height="200"></canvas>
+      </div>
     </div>
   </div>
 </body>
@@ -80,3 +84,4 @@ limitations under the License.
 <!-- Include your custom JavaScript file (index.js) for functionality -->
 <script src="src/index.js"></script>
 </html>
+

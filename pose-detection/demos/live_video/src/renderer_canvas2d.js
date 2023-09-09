@@ -17,6 +17,7 @@
 // Import necessary libraries/modules
 import * as posedetection from '@tensorflow-models/pose-detection'; // Import TensorFlow pose detection library
 import * as scatter from 'scatter-gl'; // Import scatter plot library for 3D rendering
+//import Chart from 'chart.js'; // Import Chart.js library for chart rendering
 
 // Import configuration parameters from the 'params.js' file
 import * as params from './params';
@@ -182,10 +183,10 @@ export class RendererCanvas2d {
       angleValueElement.textContent = angle.toFixed(2); // Display angle with 2 decimal places
     }
     if (keypointCoordinatesRightArm.length === 3) {
-      const angle = this.calculateAngle(keypointCoordinatesRightArm[0], keypointCoordinatesRightArm[1], keypointCoordinatesRightArm[2]);
+      this.angleRightArm = this.calculateAngle(keypointCoordinatesRightArm[0], keypointCoordinatesRightArm[1], keypointCoordinatesRightArm[2]);
       // Update the angle value in the HTML element
       const angleValueElement = document.getElementById('angle-value-right-arm');
-      angleValueElement.textContent = angle.toFixed(2); // Display angle with 2 decimal places
+      angleValueElement.textContent = this.angleRightArm.toFixed(2); // Display angle with 2 decimal places
     }
     if (keypointCoordinatesLeftKneeHipShoulder.length === 3) {
       const angle = this.calculateAngle(keypointCoordinatesLeftKneeHipShoulder[0], keypointCoordinatesLeftKneeHipShoulder[1], keypointCoordinatesLeftKneeHipShoulder[2]);
@@ -362,3 +363,95 @@ drawSkeleton(keypoints, poseId) {
     this.scatterGLHasInitialized = true;
   }
 }
+
+
+//Chart-related code below this line
+// Get a reference to the canvas element
+const chartCanvas = document.getElementById('forcePlateChart');
+
+// Initialize the Chart.js chart with default data
+const ctx_chart = chartCanvas.getContext('2d');
+
+// Define the configuration for the Chart.js chart
+const chartConfig = {
+  type: 'line', // Specify the chart type as a line chart
+  data: {
+    labels: [], // An array to hold X-axis labels (timestamps or time intervals)
+    datasets: [{
+      label: 'Force Plate Value', // Label for the dataset
+      data: [], // An array to hold numerical data points for the force plate values
+      borderColor: 'Purple', // Color of the line
+      borderWidth: 4, // Width of the line
+      fill: false, // Fill the area under the line (set to 'false' for just lines)
+    }],
+  },
+  options: {
+    scales: {
+      x: {
+        type: 'linear', // X-axis scale type is linear
+        position: 'bottom', // X-axis position at the bottom
+        display: false,
+      },
+      y: {
+        beginAtZero: true, // Start Y-axis from zero
+        max: 100, // Set the maximum value for the Y-axis
+        display: true,
+      },
+    },
+  },
+};
+
+// Create a new Chart.js chart instance using the canvas context and configuration
+const forcePlateChart = new Chart(ctx_chart, chartConfig);
+
+/// Function to update the chart with new data or maintain the existing data
+function updateChart(newNumericValue,time) {
+  //console.log('DBG: updateChart called with value:', newNumericValue);
+  const timestamp = new Date().toLocaleTimeString(); // Replace with actual timestamp
+  //console.log('DBG: Timestamp:', time);
+
+  // Add the new data point to the chart
+  forcePlateChart.data.labels.push(time);
+  //console.log('DBG: ForcePlateChart.data.datasets:', forcePlateChart.data.datasets[0]);
+  forcePlateChart.data.datasets[0].data.push(newNumericValue);
+
+  // Limit the number of data points displayed
+  const maxDataPoints = 50;
+  if (forcePlateChart.data.labels.length > maxDataPoints) {
+      // Clear the labels and data arrays
+      resetChart();
+  }
+  // Update the chart
+  else forcePlateChart.update();
+}
+
+
+// Function to reset the chart completely
+function resetChart() {
+  // Clear the labels and data arrays
+  forcePlateChart.data.labels = [];
+  forcePlateChart.data.datasets[0].data = [];
+
+  // Reset the time variable
+  time = 0;
+  console.log("DBG: Chart RESET!")
+
+
+  // Update the chart to reflect the changes
+  forcePlateChart.update();
+}
+
+let time = 0;
+// Simulate value changes (replace with your data source)
+setInterval(() => {
+  const newValue = Math.random() * 100; // Generate a random value
+  time = time + 1;
+  updateChart(newValue, time);
+}, 250); // Update the chart every X milliseconds
+
+
+
+
+
+
+
