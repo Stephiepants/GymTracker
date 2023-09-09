@@ -12,21 +12,28 @@ limitations under the License.
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Set the character encoding for the document -->
   <meta charset="utf-8">
+  <!-- Configure the viewport for responsive design -->
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no">
+  <!-- Define some CSS styles -->
   <style>
+    /* Remove default margin for the body */
     body {
       margin: 0;
     }
+    /* Styling for statistics display (not visible in this code) */
     #stats {
       position: relative;
       width: 100%;
       height: 80px;
     }
+    /* Styling for the main content */
     #main {
       position: relative;
       margin: 0;
     }
+    /* Styling for canvas and scatter plot container */
     #canvas-wrapper,
     #scatter-gl-container {
       position: relative;
@@ -34,11 +41,17 @@ limitations under the License.
   </style>
 </head>
 <body>
+  <!-- Statistics display (not visible in this code) -->
   <div id="stats"></div>
+  <!-- Main content container -->
   <div id="main">
+    <!-- Container for various elements -->
     <div class="container">
+      <!-- Container for canvas and video elements -->
       <div class="canvas-wrapper">
+        <!-- Canvas element for rendering output -->
         <canvas id="output"></canvas>
+        <!-- Video element for displaying video feed -->
         <video id="video" playsinline style="
           -webkit-transform: scaleX(-1);
           transform: scaleX(-1);
@@ -48,12 +61,22 @@ limitations under the License.
           ">
         </video>
       </div>
+      <!-- Container for 3D scatter plot (not visible in this code) -->
       <div id="scatter-gl-container"></div>
+      <!-- Display for angle information -->
+      <!-- Display for angle information with an inline style -->
+      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Left shoulder, elbow & wrist): <span id="angle-value-left-arm">0</span> degrees</div>
+      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Right shoulder,elbow & wrist): <span id="angle-value-right-arm">0</span> degrees</div>
+      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
+      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
+      <!-- Numerical value display centered in the middle of the screen -->
+      <div id="numerical-value-display" style="position: absolute; top: 25%; left: 40%; font-size: 24px; color: red;">ForcePlate value: <span id="numerical-value">0</span> Unit?</div>
     </div>
   </div>
 </body>
+<!-- Include external JavaScript libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.min.js"></script>
+<!-- Include your custom JavaScript file (index.js) for functionality -->
 <script src="src/index.js"></script>
-
 </html>
