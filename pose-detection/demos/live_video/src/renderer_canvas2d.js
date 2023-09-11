@@ -110,6 +110,8 @@ export class RendererCanvas2d {
     this.ctx.strokeStyle = 'White'; // Set the default color for keypoint outlines
     this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
 
+    ////!!BELOW MODIFIED BY MARCUS (START)!!////
+
     // Define the indices of keypoints that you want to draw
     const keypointIndicesLeftArm = [5, 7, 9];
     const keypointCoordinatesLeftArm = keypointIndicesLeftArm.map(i => ({
@@ -140,6 +142,8 @@ export class RendererCanvas2d {
       y: keypoints[i].y
     }));
 
+    ////!!MODIFIED BY MARCUS (END)!!////
+
     for (const i of keypointInd.middle) {
       const keypoint = keypoints[i];
       this.drawKeypoint(keypoint);
@@ -165,6 +169,8 @@ export class RendererCanvas2d {
       //DBG: Print keypoint values to the console
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
     }
+
+    ////!!BELOW MODIFIED BY MARCUS (START)!!////
 
     //Should be used to keep angle code dry, but crashes when used.//
     function updateAngleAndDisplay(keypointCoordinates, elementId) {
@@ -222,6 +228,8 @@ export class RendererCanvas2d {
     return angleDegrees;
   }
 
+  ////!!MODIFIED BY MARCUS (END)!!////
+
   // Draw a single keypoint on the video frame
   drawKeypoint(keypoint) {
     // If score is null, just show the keypoint.
@@ -266,6 +274,8 @@ drawSkeleton(keypoints, poseId) {
       // Draw a line from the current position (kp1) to the coordinates of the second keypoint (kp2)
       this.ctx.lineTo(kp2.x, kp2.y);
       // The line will be drawn between kp1 and kp2 only if both keypoints have scores above the threshold
+
+      ////!!BELOW MODIFIED BY MARCUS (START)!!////
 
       // Check if the keypoints being connected are part of the left arm
       if ((i === 5 && j === 7) || (i === 7 && j === 9)) {
@@ -325,6 +335,8 @@ drawSkeleton(keypoints, poseId) {
   this.ctx.strokeStyle = color;
 }
 
+   ////!!MODIFIED BY MARCUS (END)!!////
+
   // Draw 3D keypoints if 3D rendering is enabled
   drawKeypoints3D(keypoints) {
     const scoreThreshold = params.STATE.modelConfig.scoreThreshold || 0;
@@ -364,6 +376,7 @@ drawSkeleton(keypoints, poseId) {
   }
 }
 
+////!!BELOW MODIFIED BY MARCUS (START)!!////
 
 //Chart-related code below this line
 // Get a reference to the canvas element
@@ -448,6 +461,8 @@ setInterval(() => {
   time = time + 1;
   updateChart(newValue, time);
 }, 250); // Update the chart every X milliseconds
+
+////!!MODIFIED BY MARCUS (END)!!////
 
 
 

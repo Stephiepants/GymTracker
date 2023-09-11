@@ -39,7 +39,9 @@ limitations under the License.
       position: relative;
     }
   </style>
+  <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <!-- !!MODIFIED BY MARCUS!! (END) -->
 </head>
 <body>
   <!-- Statistics display (not visible in this code) -->
@@ -64,6 +66,8 @@ limitations under the License.
       </div>
       <!-- Container for 3D scatter plot (not visible in this code) -->
       <div id="scatter-gl-container"></div>
+
+      <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
       <!-- Display for angle information -->
       <!-- Display for angle information with an inline style -->
       <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Left shoulder, elbow & wrist): <span id="angle-value-left-arm">0</span> degrees</div>
@@ -75,6 +79,7 @@ limitations under the License.
       <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
         <canvas id="forcePlateChart" width="400" height="200"></canvas>
       </div>
+      <!-- !!MODIFIED BY MARCUS!! (END) -->
     </div>
   </div>
 </body>
