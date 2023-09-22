@@ -1,6 +1,6 @@
 // Define a function to parse sensor data
 
-function parseSensorData(name, event) {
+export function parseSensorData(name, event) {
   // Extract the sensor data from the event's buffer
   const data = new Uint8Array(event.target.value.buffer);
   // console.log(data)
@@ -89,4 +89,97 @@ function calculateAverage(array) {
   // Calculate and return the average
   const average = sum / array.length;
   return average;
+}
+
+let Chart0011;
+let Chart0010;
+
+// Function to create and update a bar chart for 0011
+function createAndUpdateBarChart0011(back, front) {
+  // Get the canvas element by its ID
+  const ctx = document.getElementById("Chart0011").getContext("2d");
+
+  // Initialize or update chart data
+  if (!Chart0011) {
+    // Create a new bar chart instance with initial data
+    Chart0011 = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Backsensor", "Frontsensor"],
+        datasets: [
+          {
+            label: "Right foot (0011)",
+            data: [back, front],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)", // Color for the first bar
+              "rgba(54, 162, 235, 0.2)", // Color for the second bar
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)", // Border color for the first bar
+              "rgba(54, 162, 235, 1)", // Border color for the second bar
+            ],
+            borderWidth: 1, // Border width for all bars
+          },
+        ],
+      },
+      options: {
+        // maintainAspectRatio: false, // Disable aspect ratio constraint
+        scales: {
+          y: {
+            max: 200,
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  } else {
+    // Update the chart data with new values
+    Chart0011.data.datasets[0].data = [back, front];
+    Chart0011.update();
+  }
+}
+
+// Function to create and update a bar chart for 0010
+function createAndUpdateBarChart0010(back, front) {
+  // Get the canvas element by its ID
+  const ctx = document.getElementById("Chart0010").getContext("2d");
+
+  // Initialize or update chart data
+  if (!Chart0010) {
+    // Create a new bar chart instance with initial data
+    Chart0010 = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Backsensor", "Frontsensor"],
+        datasets: [
+          {
+            label: "Left foot (0010)",
+            data: [back, front],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)", // Color for the first bar
+              "rgba(54, 162, 235, 0.2)", // Color for the second bar
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)", // Border color for the first bar
+              "rgba(54, 162, 235, 1)", // Border color for the second bar
+            ],
+            borderWidth: 1, // Border width for all bars
+          },
+        ],
+      },
+      options: {
+        // maintainAspectRatio: false, // Disable aspect ratio constraint
+        scales: {
+          y: {
+            max: 200,
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  } else {
+    // Update the chart data with new values
+    Chart0010.data.datasets[0].data = [back, front];
+    Chart0010.update();
+  }
 }
