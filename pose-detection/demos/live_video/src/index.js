@@ -35,6 +35,7 @@ import {setupDatGui} from './option_panel';
 import {STATE} from './params';
 import {setupStats} from './stats_panel';
 import {setBackendAndEnvFlags} from './util';
+import {connectToDevice} from './BLE_forceplates';
 
 let detector, camera, stats;
 let startInferenceTime, numInferences = 0;
@@ -89,7 +90,7 @@ async function createDetector() {
 
 async function checkGuiUpdate() {
   if (STATE.isTargetFPSChanged || STATE.isSizeOptionChanged) {
-    camera = await Camera.setupCamera(STATE.camera);
+    camera = await Camera.setup(STATE.camera);
     STATE.isTargetFPSChanged = false;
     STATE.isSizeOptionChanged = false;
   }

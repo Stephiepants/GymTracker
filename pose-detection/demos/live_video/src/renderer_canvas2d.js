@@ -313,7 +313,7 @@ drawSkeleton(keypoints, poseId) {
         else if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
           // Calculate the angle between keypoints 6, 12, and 14 (right shoulder, hip, knee)
           const angleRightShoulderHipKnee = this.calculateAngle(keypoints[6], keypoints[12], keypoints[14]);
-          console.log(`Angle between keypoints 6, 12, and 14 (Right side shoulder-hip-knee): ${angleRightShoulderHipKnee} degrees`);
+          //console.log(`DBG: Angle between keypoints 6, 12, and 14 (Right side shoulder-hip-knee): ${angleRightShoulderHipKnee} degrees`);
 
           // Change the color based on the angle (you can adjust the angle range as needed)
           if (angleRightShoulderHipKnee >= 0 && angleRightShoulderHipKnee <= 100) {
@@ -391,7 +391,7 @@ const chartConfig = {
   data: {
     labels: [], // An array to hold X-axis labels (timestamps or time intervals)
     datasets: [{
-      label: 'Force Plate Value', // Label for the dataset
+      label: 'Average Force', // Label for the dataset
       data: [], // An array to hold numerical data points for the force plate values
       borderColor: 'Purple', // Color of the line
       borderWidth: 4, // Width of the line
@@ -407,7 +407,7 @@ const chartConfig = {
       },
       y: {
         beginAtZero: true, // Start Y-axis from zero
-        max: 100, // Set the maximum value for the Y-axis
+        max: 150, // Set the maximum value for the Y-axis
         display: true,
       },
     },
@@ -418,7 +418,7 @@ const chartConfig = {
 const forcePlateChart = new Chart(ctx_chart, chartConfig);
 
 /// Function to update the chart with new data or maintain the existing data
-function updateChart(newNumericValue,time) {
+export function updateChart(newNumericValue,time) {
   //console.log('DBG: updateChart called with value:', newNumericValue);
   const timestamp = new Date().toLocaleTimeString(); // Replace with actual timestamp
   //console.log('DBG: Timestamp:', time);
@@ -459,12 +459,157 @@ let time = 0;
 setInterval(() => {
   const newValue = Math.random() * 100; // Generate a random value
   time = time + 1;
-  updateChart(newValue, time);
+ //createAndUpdateBarChart0011(newValue, newValue); // creates and updates the chart with the values from sensor 0011
+ //createAndUpdateBarChart0010(newValue, newValue); //creates and updates the chart with the values from sensor 0010
+  //updateChart(newValue, time);
 }, 250); // Update the chart every X milliseconds
 
 ////!!MODIFIED BY MARCUS (END)!!////
 
+/////////////Chart Code START///////////////////////////////////
+// Define a global variable for charts
+let Chart0011;
+let Chart0010;
 
+// Function to create and update a bar chart for 0011
+export function createAndUpdateBarChart0011(back, front) {
+  // Get the canvas element by its ID
+  const ctx = document.getElementById("Chart0011").getContext("2d");
+
+  // Initialize or update chart data
+  if (!Chart0011) {
+    // Create a new bar chart instance with initial data
+    Chart0011 = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Backsensor", "Frontsensor"],
+        datasets: [
+          {
+            label: "Right foot (0011)",
+            data: [back, front],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)", // Color for the first bar
+              "rgba(54, 162, 235, 0.2)", // Color for the second bar
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)", // Border color for the first bar
+              "rgba(54, 162, 235, 1)", // Border color for the second bar
+            ],
+            borderWidth: 1, // Border width for all bars
+          },
+        ],
+      },
+      options: {
+        // maintainAspectRatio: false, // Disable aspect ratio constraint
+        scales: {
+          y: {
+            max: 200,
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  } else {
+    // Update the chart data with new values
+    Chart0011.data.datasets[0].data = [back, front];
+    Chart0011.update();
+  }
+}
+
+// Function to create and update a bar chart for 0010
+export function createAndUpdateBarChart0010(back, front) {
+  // Get the canvas element by its ID
+  const ctx = document.getElementById("Chart0010").getContext("2d");
+
+  // Initialize or update chart data
+  if (!Chart0010) {
+    // Create a new bar chart instance with initial data
+    Chart0010 = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Backsensor", "Frontsensor"],
+        datasets: [
+          {
+            label: "Left foot (0010)",
+            data: [back, front],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)", // Color for the first bar
+              "rgba(54, 162, 235, 0.2)", // Color for the second bar
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)", // Border color for the first bar
+              "rgba(54, 162, 235, 1)", // Border color for the second bar
+            ],
+            borderWidth: 1, // Border width for all bars
+          },
+        ],
+      },
+      options: {
+        // maintainAspectRatio: false, // Disable aspect ratio constraint
+        scales: {
+          y: {
+            max: 200,
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  } else {
+    // Update the chart data with new values
+    Chart0010.data.datasets[0].data = [back, front];
+    Chart0010.update();
+  }
+}
+
+/////////////Chart Code END///////////////////////////////////
+
+
+
+
+/////////////Web BLE Code START///////////////////////////////////
+
+import { ForcePlateUUIDS } from "./UUIDs";
+import * as BLE_forcePlates from "./BLE_forceplates"
+
+document.querySelector('#connect').disabled = false
+document.querySelector('#start').disabled = true
+document.querySelector('#stop').disabled = true
+document.querySelector('#writeStart').disabled = true
+document.querySelector('#writeStop').disabled = true
+document.querySelector('#writeTare').disabled = true
+document.querySelector('#battery_level').disabled = true
+
+
+document.querySelector('#connect').addEventListener('click', function() {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onConnectButtonClick() }
+})
+
+document.querySelector('#start').addEventListener('click', function(event) {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onStartButtonClick() }
+})
+
+document.querySelector('#stop').addEventListener('click', function(event) {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onStopButtonClick() }
+})
+document.querySelector('#writeStart').addEventListener('click', function() {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onWriteButtonClick(ForcePlateUUIDS.START) }
+})
+document.querySelector('#writeStop').addEventListener('click', function() {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onWriteButtonClick(ForcePlateUUIDS.STOP) }
+})
+document.querySelector('#writeTare').addEventListener('click', function() {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onWriteButtonClick(ForcePlateUUIDS.TARE) }
+})
+
+document.querySelector('#battery_level').addEventListener('click', function() {
+  if (BLE_forcePlates.isWebBluetoothEnabled()) { BLE_forcePlates.onBatteryButtonClick() }
+})
+
+
+
+/////////////Web BLE END///////////////////////////////////
+
+/////////////Web BLE END///////////////////////////////////
 
 
 

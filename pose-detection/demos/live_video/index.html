@@ -46,6 +46,14 @@ limitations under the License.
 <body>
   <!-- Statistics display (not visible in this code) -->
   <div id="stats"></div>
+  <button id="connect" disabled>Connect to BLE</button>
+  <button id="start" disabled>Start Notifications</button>
+  <button id="stop" disabled>Stop Notifications</button>
+  <button id="writeStart" disabled>Write "START" to BLE</button>
+  <button id="writeStop" disabled>Write "STOP" to BLE</button>
+  <button id="writeTare" disabled>Write "TARE" to BLE</button>
+  <button id="battery_level" disabled>Check Battery_level</button>
+
   <!-- Main content container -->
   <div id="main">
     <!-- Container for various elements -->
@@ -75,9 +83,21 @@ limitations under the License.
       <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
       <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
       <!-- Numerical value display centered in the middle of the screen -->
-      <div id="numerical-value-display" style="position: absolute; top: 25%; left: 40%; font-size: 24px; color: red;">ForcePlate value: <span id="numerical-value">0</span> Unit?</div>
-      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+      <!--<div id="numerical-value-display" style="position: absolute; top: 60%; left: 40%; font-size: 24px; color: red;">ForcePlate value: <span id="numerical-value">0</span> Unit?</div>-->
+      <div style="position: absolute; top: 0%; left: 55%; transform: translate(-50%, -50%);">
         <canvas id="forcePlateChart" width="400" height="200"></canvas>
+      </div>
+      <div class="canvas-container-0011">
+        <canvas
+          id="Chart0011"
+          style="display: block; box-sizing: border-box"
+        ></canvas>
+      </div>
+      <div class="canvas-container-0010">
+        <canvas
+          id="Chart0010"
+          style="display: block; box-sizing: border-box"
+        ></canvas>
       </div>
       <!-- !!MODIFIED BY MARCUS!! (END) -->
     </div>
@@ -90,3 +110,21 @@ limitations under the License.
 <script src="src/index.js"></script>
 </html>
 
+
+<style>
+  /* styling for the charts */
+  .canvas-container-0011 {
+    height: 250px;
+    width: 300px;
+    margin: auto;
+    border: 2px solid green;
+    position: absolute; top: 40%; left: 65%; transform: translate(-50%, -50%);
+  }
+
+  .canvas-container-0010 {
+    height: 250px;
+    width: 300px;
+    margin: auto;
+    border: 2px solid blue;
+    position: absolute; top: 40%; left: 45%; transform: translate(-50%, -50%);
+  }
