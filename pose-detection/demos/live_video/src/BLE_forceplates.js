@@ -1,5 +1,7 @@
 import { ForcePlateUUIDS } from "./UUIDs";
 import * as forcePlateParser from "./forcePlateParser";
+import { updateChart } from "./renderer_canvas2d";
+
 var acquiredNotifyGATTCharacteristic;
 var acquiredWriteGATTCharacteristic;
 var battery_levelServiceUUID = "0000180f-0000-1000-8000-00805f9b34fb";
@@ -146,8 +148,6 @@ export function onWriteButtonClick(valueToWrite) {
       });
   }
 }
-
-import { updateChart } from "./renderer_canvas2d";
 
 // Event handler for incoming notifications
 function handleNotification(event) {
