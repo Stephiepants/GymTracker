@@ -29,12 +29,19 @@ export const VIDEO_SIZE = {
   '360 X 270': { width: 360, height: 270 }, // Option 3: 360 pixels wide and 270 pixels tall.
 };
 
+export const AVAILABLE_EXERCISE = {
+  "Squat": {exercise: "Squat"},
+  "Deadlift": {exercise: "Deadlift"},
+  "Bicep curl": {exercise: "BicepCurl"}
+}
+
 // Define an initial application state with various properties.
 export const STATE = {
   camera: { targetFPS: 60, sizeOption: '640 X 480' }, // Camera settings, defaulting to 640x480 and 60 FPS.
   backend: '', // The backend used for TensorFlow.js (empty initially).
   flags: {}, // Flags configuration (empty initially).
   modelConfig: {}, // Model configuration (empty initially).
+  Exercise: "Bicep curl"
 };
 
 // Define configuration options for the BlazePose model.
@@ -55,7 +62,7 @@ export const POSENET_CONFIG = {
 export const MOVENET_CONFIG = {
   maxPoses: 1, // Maximum number of poses to detect (set to 1).
   type: 'lightning', // Type of detection (lightning).
-  scoreThreshold: 0.3, // Minimum confidence score for a pose to be considered valid.
+  scoreThreshold: 0.4, // Minimum confidence score for a pose to be considered valid.
   customModel: '', // Custom model (empty initially).
   enableTracking: false, // Whether to enable pose tracking (false).
 };

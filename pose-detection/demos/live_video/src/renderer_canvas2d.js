@@ -120,7 +120,7 @@ export class RendererCanvas2d {
 
     ////!!BELOW MODIFIED BY MARCUS (START)!!////
 
-    // Define the indices of keypoints that you want to draw
+    /* // Define the indices of keypoints that you want to draw
     const keypointIndicesLeftArm = [5, 7, 9];
     const keypointCoordinatesLeftArm = keypointIndicesLeftArm.map((i) => ({
       x: keypoints[i].x,
@@ -148,13 +148,14 @@ export class RendererCanvas2d {
       keypointIndicesRightKneeHipShoulder.map((i) => ({
         x: keypoints[i].x,
         y: keypoints[i].y,
-      }));
+      })); */
 
     ////!!MODIFIED BY MARCUS (END)!!////
 
     for (const i of keypointInd.middle) {
-      const keypoint = keypoints[i];
-      this.drawKeypoint(keypoint);
+      if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
+        const keypoint = keypoints[i];
+        this.drawKeypoint(keypoint);
 
       // Print keypoint values to the console (optional)
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
@@ -162,8 +163,9 @@ export class RendererCanvas2d {
 
     this.ctx.fillStyle = "Green"; // Set color for left keypoints
     for (const i of keypointInd.left) {
-      const keypoint = keypoints[i];
-      this.drawKeypoint(keypoint);
+      if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
+        const keypoint = keypoints[i];
+        this.drawKeypoint(keypoint);
 
       //DBG: Print keypoint values to the console
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
@@ -171,8 +173,9 @@ export class RendererCanvas2d {
 
     this.ctx.fillStyle = "Orange"; // Set color for right keypoints
     for (const i of keypointInd.right) {
-      const keypoint = keypoints[i];
-      this.drawKeypoint(keypoint);
+      if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
+        const keypoint = keypoints[i];
+        this.drawKeypoint(keypoint);
 
       //DBG: Print keypoint values to the console
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
@@ -193,7 +196,7 @@ export class RendererCanvas2d {
       }
     }
 
-    if (keypointCoordinatesLeftArm.length === 3) {
+    /* if (keypointCoordinatesLeftArm.length === 3) {
       const angle = this.calculateAngle(
         keypointCoordinatesLeftArm[0],
         keypointCoordinatesLeftArm[1],
@@ -214,8 +217,8 @@ export class RendererCanvas2d {
         "angle-value-right-arm"
       );
       angleValueElement.textContent = this.angleRightArm.toFixed(2); // Display angle with 2 decimal places
-    }
-    if (keypointCoordinatesLeftKneeHipShoulder.length === 3) {
+    } */
+    /* if (keypointCoordinatesLeftKneeHipShoulder.length === 3) {
       const angle = this.calculateAngle(
         keypointCoordinatesLeftKneeHipShoulder[0],
         keypointCoordinatesLeftKneeHipShoulder[1],
@@ -226,8 +229,8 @@ export class RendererCanvas2d {
         "angle-value-left-knee-hip-shoulder"
       );
       angleValueElement.textContent = angle.toFixed(2); // Display angle with 2 decimal places
-    }
-    if (keypointCoordinatesRightKneeHipShoulder.length === 3) {
+    } */
+    /* if (keypointCoordinatesRightKneeHipShoulder.length === 3) {
       const angle = this.calculateAngle(
         keypointCoordinatesRightKneeHipShoulder[0],
         keypointCoordinatesRightKneeHipShoulder[1],
@@ -238,7 +241,7 @@ export class RendererCanvas2d {
         "angle-value-right-knee-hip-shoulder"
       );
       angleValueElement.textContent = angle.toFixed(2); // Display angle with 2 decimal places
-    }
+    } */
   }
 
   // Calculate the angle between three keypoints
@@ -292,9 +295,8 @@ export class RendererCanvas2d {
     this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
 
     // Iterate through pairs of keypoints to draw the skeleton
-    posedetection.util
-      .getAdjacentPairs(params.STATE.model)
-      .forEach(([i, j]) => {
+    posedetection.util.getAdjacentPairs(params.STATE.model).forEach(([i, j]) => {
+      if ([0, 1, 2, 3, 4].includes(i) || [0, 1, 2, 3, 4].includes(j)) return; // Skip drawing lines connected to keypoints 0,1,2,3,4
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
 
@@ -314,29 +316,43 @@ export class RendererCanvas2d {
           // The line will be drawn between kp1 and kp2 only if both keypoints have scores above the threshold
 
           ////!!BELOW MODIFIED BY MARCUS (START)!!////
+          if(params.STATE.Exercise == "Bicep curl"){
+            document.getElementById('angle-display-left-arm').style.display = 'block';
+            document.getElementById('angle-display-right-arm').style.display = 'block';
+            document.getElementById('angle-display-left-side').style.display = 'none';
+            document.getElementById('angle-display-right-side').style.display = 'none';
+            // Check if the keypoints being connected are part of the left arm
+            if ((i === 5 && j === 7) || (i === 7 && j === 9)) {
+              // Calculate the angle between keypoints 5, 7, and 9 (Left shoulder, elbow, wrist)
+              const angleLeftArm = this.calculateAngle(
+                keypoints[5],
+                keypoints[7],
+                keypoints[9]
+              );
+              // Update the angle value in the HTML element
+              const angleValueElement = document.getElementById(
+                "angle-value-left-arm"
+              );
+              angleValueElement.textContent = angleLeftArm.toFixed(2); // Display angle with 2 decimal places
 
-          // Check if the keypoints being connected are part of the left arm
-          if ((i === 5 && j === 7) || (i === 7 && j === 9)) {
-            // Calculate the angle between keypoints 5, 7, and 9 (Left shoulder, elbow, wrist)
-            const angleLeftArm = this.calculateAngle(
-              keypoints[5],
-              keypoints[7],
-              keypoints[9]
-            );
-
-            // Change the color based on the angle (you can adjust the angle range as needed)
-            if (angleLeftArm >= 15 && angleLeftArm <= 150) {
-              this.ctx.strokeStyle = "Green"; // Change the color to green (you can use any color you like)
-            } else {
-              this.ctx.strokeStyle = color; // Use the default color
-            }
-          } else if ((i === 6 && j === 8) || (i === 8 && j === 10)) {
-            // Calculate the angle between keypoints 6, 8, and 10 (Right shoulder, elbow, wrist)
-            const angleRightArm = this.calculateAngle(
-              keypoints[6],
-              keypoints[8],
-              keypoints[10]
-            );
+              // Change the color based on the angle (you can adjust the angle range as needed)
+              if (angleLeftArm >= 15 && angleLeftArm <= 150) {
+                this.ctx.strokeStyle = "Green"; // Change the color to green (you can use any color you like)
+              } else {
+                this.ctx.strokeStyle = color; // Use the default color
+              }
+            } else if ((i === 6 && j === 8) || (i === 8 && j === 10)) {
+              // Calculate the angle between keypoints 6, 8, and 10 (Right shoulder, elbow, wrist)
+              const angleRightArm = this.calculateAngle(
+                keypoints[6],
+                keypoints[8],
+                keypoints[10]
+              );
+              // Update the angle value in the HTML element
+              const angleValueElement = document.getElementById(
+                "angle-value-right-arm"
+              );
+              angleValueElement.textContent = angleRightArm.toFixed(2); // Display angle with 2 decimal places
 
             // Change the color based on the angle (you can adjust the angle range as needed)
             if (angleRightArm >= 15 && angleRightArm <= 150) {
@@ -344,43 +360,61 @@ export class RendererCanvas2d {
             } else {
               this.ctx.strokeStyle = color; // Use the default color
             }
-          } else if ((i === 5 && j === 11) || (i === 11 && j === 13)) {
-            // Calculate the angle between keypoints 5, 11, and 13 (leftside shoulder, hip, knee)
-            const angleLeftShoulderHipKnee = this.calculateAngle(
-              keypoints[5],
-              keypoints[11],
-              keypoints[13]
-            );
+          }
+          else this.ctx.strokeStyle = color;
+          }
 
-            // Change the color based on the angle (you can adjust the angle range as needed)
-            if (
-              angleLeftShoulderHipKnee >= 0 &&
-              angleLeftShoulderHipKnee <= 100
-            ) {
-              this.ctx.strokeStyle = "Green"; // Change the color to green for angles between 0 and 100 degrees
-            } else {
-              this.ctx.strokeStyle = color; // Use the default color
-            }
-          } else if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
-            // Calculate the angle between keypoints 6, 12, and 14 (right shoulder, hip, knee)
-            const angleRightShoulderHipKnee = this.calculateAngle(
-              keypoints[6],
-              keypoints[12],
-              keypoints[14]
-            );
-            //console.log(`DBG: Angle between keypoints 6, 12, and 14 (Right side shoulder-hip-knee): ${angleRightShoulderHipKnee} degrees`);
 
-            // Change the color based on the angle (you can adjust the angle range as needed)
-            if (
-              angleRightShoulderHipKnee >= 0 &&
-              angleRightShoulderHipKnee <= 100
-            ) {
-              this.ctx.strokeStyle = "Green"; // Change the color to green for angles between 0 and 100 degrees
-            } else {
-              this.ctx.strokeStyle = color; // Use the default color
-            }
-          } else {
-            this.ctx.strokeStyle = color; // Use the default color for other lines
+          if(params.STATE.Exercise == "Deadlift" || params.STATE.Exercise == "Squat"){
+            document.getElementById('angle-display-left-arm').style.display = 'none';
+            document.getElementById('angle-display-right-arm').style.display = 'none';
+            document.getElementById('angle-display-left-side').style.display = 'block';
+            document.getElementById('angle-display-right-side').style.display = 'block';
+            if ((i === 5 && j === 11) || (i === 11 && j === 13)) {
+              // Calculate the angle between keypoints 5, 11, and 13 (leftside shoulder, hip, knee)
+              const angleLeftShoulderHipKnee = this.calculateAngle(
+                keypoints[5],
+                keypoints[11],
+                keypoints[13]
+              );
+
+              const angleValueElement = document.getElementById(
+                "angle-value-left-knee-hip-shoulder"
+              );
+              angleValueElement.textContent = angleLeftShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
+
+              // Change the color based on the angle (you can adjust the angle range as needed)
+              if (
+                angleLeftShoulderHipKnee >= 0 &&
+                angleLeftShoulderHipKnee <= 100
+              ) {
+                this.ctx.strokeStyle = "Green"; // Change the color to green for angles between 0 and 100 degrees
+              } else {
+                this.ctx.strokeStyle = color; // Use the default color
+              }
+            } else if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
+              // Calculate the angle between keypoints 6, 12, and 14 (right shoulder, hip, knee)
+              const angleRightShoulderHipKnee = this.calculateAngle(
+                keypoints[6],
+                keypoints[12],
+                keypoints[14]
+              );
+              const angleValueElement = document.getElementById(
+                "angle-value-right-knee-hip-shoulder"
+              );
+              angleValueElement.textContent = angleRightShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
+
+              // Change the color based on the angle (you can adjust the angle range as needed)
+              if (
+                angleRightShoulderHipKnee >= 0 &&
+                angleRightShoulderHipKnee <= 100
+              ) {
+                this.ctx.strokeStyle = "Green"; // Change the color to green for angles between 0 and 100 degrees
+              } else {
+                this.ctx.strokeStyle = color; // Use the default color
+              }
+            } else this.ctx.strokeStyle = color; // Use the default color for other lines
+
           }
 
           this.ctx.stroke(); // Draw the line
@@ -587,4 +621,3 @@ document.querySelector("#battery_level").addEventListener("click", function () {
 
 /////////////Web BLE END///////////////////////////////////
 
-/////////////Web BLE END///////////////////////////////////

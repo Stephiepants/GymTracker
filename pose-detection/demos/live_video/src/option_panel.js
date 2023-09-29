@@ -38,21 +38,29 @@ export async function setupDatGui(urlParams) {
   gui.domElement.id = 'gui'; // Set the GUI element's DOM ID.
 
   // Create a folder in the GUI for camera settings.
-  const cameraFolder = gui.addFolder('Camera');
-  const fpsController = cameraFolder.add(params.STATE.camera, 'targetFPS'); // Add a controller for the target frames per second.
+  const exerciseFolder = gui.addFolder('Choose a exercise');
+  /* const fpsController = cameraFolder.add(params.STATE.camera, 'targetFPS'); // Add a controller for the target frames per second.
   fpsController.onFinishChange((_) => {
     params.STATE.isTargetFPSChanged = true;
-  });
-  const sizeController = cameraFolder.add(
+  }); */
+  /* const sizeController = cameraFolder.add(
     params.STATE.camera, 'sizeOption', Object.keys(params.VIDEO_SIZE)
   ); // Add a controller for selecting video size.
   sizeController.onChange(_ => {
     params.STATE.isSizeOptionChanged = true;
-  });
-  cameraFolder.open(); // Open the camera settings folder in the GUI.
+  }); */
+  const exerciseController = exerciseFolder.add(
+    params.STATE, 'Exercise', Object.keys(params.AVAILABLE_EXERCISE)
+);
 
-  // Create a folder in the GUI for selecting the pose detection model.
-  const modelFolder = gui.addFolder('Model');
+exerciseController.onChange(selectedExercise => {
+    params.STATE.isExerciseChanged = true;
+    params.STATE.chosenExercise = params.AVAILABLE_EXERCISE[selectedExercise].exercise;
+    console.log("DBG: params.STATE.chosenExercise is now: ", params.STATE.chosenExercise)
+});
+
+  exerciseFolder.open(); // Open the exercise settings folder in the GUI.
+
 
   const model = urlParams.get('model'); // Get the model type from URL parameters.
   let type = urlParams.get('type'); // Get the model type (subtype) from URL parameters.
@@ -81,31 +89,46 @@ export async function setupDatGui(urlParams) {
       alert(`${urlParams.get('model')}`);
       break;
   }
-
-  // Add a controller for selecting the pose detection model in the GUI.
-  const modelController = modelFolder.add(
+ // Create a folder in the GUI for selecting the pose detection model.
+ //const modelFolder = gui.addFolder('Model');
+  //Add a controller for selecting the pose detection model in the GUI.
+  /* const modelController = modelFolder.add(
     params.STATE, 'model', Object.values(posedetection.SupportedModels)
-  );
+  ); */
 
-  modelController.onChange(_ => {
+  /* modelController.onChange(_ => {
     params.STATE.isModelChanged = true;
     showModelConfigs(modelFolder); // Show the configuration options for the selected model.
     showBackendConfigs(backendFolder); // Show the backend-related configuration options.
-  });
+  }); */
 
-  showModelConfigs(modelFolder, type); // Show the model-specific configuration options.
 
-  modelFolder.open(); // Open the model folder in the GUI.
+showModelConfigs("Lightning"); // Show the model-specific configuration options.
 
-  backendFolder = gui.addFolder('Backend');
-  params.STATE.backend = backendFromURL;
+  //modelFolder.open(); // Open the model folder in the GUI.
 
-  showBackendConfigs(backendFolder);
+// Comment out or remove this line to not create the Backend folder in the GUI.
+// backendFolder = gui.addFolder('Backend');
 
-  backendFolder.open();
+// Set the default backend.
+params.STATE.backend = backendFromURL || getDefaultBackend();
 
-  return gui;
+// Comment out or remove this line to not show the backend configurations in the GUI.
+// showBackendConfigs(backendFolder);
+
+// Comment out or remove this line to not open the Backend folder in the GUI.
+// backendFolder.open();
+
+// Return the modified gui object.
+return gui;
 }
+
+// This function will return the default backend for the current model.
+function getDefaultBackend() {
+  const backends = params.MODEL_BACKEND_MAP[params.STATE.model];
+  return backends ? backends[0] : null;
+}
+
 
 // Function to show backend-related configuration options in the GUI.
 export async function showBackendConfigs(folderController) {
@@ -134,29 +157,24 @@ export async function showBackendConfigs(folderController) {
   await showFlagSettings(folderController, params.STATE.backend);
 }
 
-// Function to show model-specific configuration options in the GUI.
-function showModelConfigs(folderController, type) {
-  // Clean up model configs for the previous model.
-  // The first controller under the `folderController` is the model selection.
-  const fixedSelectionCount = 1;
-  while (folderController.__controllers.length > fixedSelectionCount) {
-    folderController.remove(
-      folderController.__controllers[folderController.__controllers.length - 1]
-    );
-  }
-
+function showModelConfigs(type) {
   switch (params.STATE.model) {
     case posedetection.SupportedModels.PoseNet:
-      addPoseNetControllers(folderController);
+      // Call the corresponding configuration function for PoseNet
+      // (replace with the actual function if it’s different)
+      addPoseNetControllers(null, type);
       break;
     case posedetection.SupportedModels.MoveNet:
-      addMoveNetControllers(folderController, type);
+      // Call the configuration function for MoveNet without passing a GUI folder
+      addMoveNetControllers(null, type);
       break;
     case posedetection.SupportedModels.BlazePose:
-      addBlazePoseControllers(folderController, type);
+      // Call the corresponding configuration function for BlazePose
+      // (replace with the actual function if it’s different)
+      addBlazePoseControllers(null, type);
       break;
     default:
-      alert(`Model ${params.STATE.model} is not supported.`);
+      console.error(`Model ${params.STATE.model} is not supported.`);
   }
 }
 
@@ -169,16 +187,18 @@ function addPoseNetControllers(modelConfigFolder) {
   modelConfigFolder.add(params.STATE.modelConfig, 'scoreThreshold', 0, 1);
 }
 
-// Function to add controllers for MoveNet model configuration options.
 function addMoveNetControllers(modelConfigFolder, type) {
   params.STATE.modelConfig = { ...params.MOVENET_CONFIG };
   params.STATE.modelConfig.type = type != null ? type : 'lightning';
 
-  // Set multipose defaults on initial page load.
+  // Set defaults
   if (params.STATE.modelConfig.type === 'multipose') {
-    params.STATE.modelConfig.enableTracking = true;
-    params.STATE.modelConfig.scoreThreshold = 0.2;
+      params.STATE.modelConfig.enableTracking = true;
+      params.STATE.modelConfig.scoreThreshold = 0.2;
   }
+
+  // If there is no GUI folder, return after setting defaults
+  if (!modelConfigFolder) return;
 
   // Add a controller for selecting the model type from a list of options.
   const typeController = modelConfigFolder.add(

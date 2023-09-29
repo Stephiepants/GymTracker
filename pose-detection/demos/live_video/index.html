@@ -78,13 +78,13 @@ limitations under the License.
       <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
       <!-- Display for angle information -->
       <!-- Display for angle information with an inline style -->
-      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Left shoulder, elbow & wrist): <span id="angle-value-left-arm">0</span> degrees</div>
-      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Right shoulder,elbow & wrist): <span id="angle-value-right-arm">0</span> degrees</div>
-      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
-      <div id="angle-display" style="color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
+      <div id="angle-display-left-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees</div>
+      <div id="angle-display-right-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
+      <div id="angle-display-left-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
+      <div id="angle-display-right-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
       <!-- Numerical value display centered in the middle of the screen -->
       <!--<div id="numerical-value-display" style="position: absolute; top: 60%; left: 40%; font-size: 24px; color: red;">ForcePlate value: <span id="numerical-value">0</span> Unit?</div>-->
-      <div style="position: absolute; top: 0%; left: 55%; transform: translate(-50%, -50%);">
+      <div style="position: absolute; top: 20%; left: 55%; transform: translate(-50%, -50%);">
         <canvas id="forcePlateChart" width="400" height="200"></canvas>
       </div>
       <div class="canvas-container-0011">
@@ -118,7 +118,7 @@ limitations under the License.
     width: 300px;
     margin: auto;
     border: 2px solid green;
-    position: absolute; top: 40%; left: 65%; transform: translate(-50%, -50%);
+    position: absolute; top: 80%; left: 65%; transform: translate(-50%, -50%);
   }
 
   .canvas-container-0010 {
@@ -126,5 +126,5 @@ limitations under the License.
     width: 300px;
     margin: auto;
     border: 2px solid blue;
-    position: absolute; top: 40%; left: 45%; transform: translate(-50%, -50%);
+    position: absolute; top: 80%; left: 45%; transform: translate(-50%, -50%);
   }
