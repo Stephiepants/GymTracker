@@ -34,11 +34,24 @@ export function parseSensorData(name, event) {
     // Calculate the total force for this data point
     const totalForce = forcePair1 + forcePair2;
 
-    if (name == "ForcePlate0011") {
-      createAndUpdateBarChart0011(forcePair1, forcePair2); // creates and updates the chart with the values from sensor 0011
-    } else {
-      createAndUpdateBarChart0010(forcePair1, forcePair2); //creates and updates the chart with the values from sensor 0010
-    }
+    const chartId = name === "ForcePlate0011" ? "Chart0011" : "Chart0010";
+    const chartLabel =
+      name === "ForcePlate0011" ? "Sensor Values 0011" : "Sensor Values 0010";
+    //console.log(chartId + " " + chartLabel);
+    createOrUpdateThrottledBarChart(
+      chartId,
+      chartLabel,
+      forcePair1,
+      forcePair2
+    );
+
+    ///////// old chart code starts here //////////
+    // if (name == "ForcePlate0011") {
+    //   createAndUpdateBarChart0011(forcePair1, forcePair2); // creates and updates the chart with the values from sensor 0011
+    // } else {
+    //   createAndUpdateBarChart0010(forcePair1, forcePair2); //creates and updates the chart with the values from sensor 0010
+    // }
+    ///////// old chart code ends here //////////
 
     // Add the parsed force data to the forceData array
     forceData.push({
@@ -91,87 +104,162 @@ function calculateAverage(array) {
   return average;
 }
 
-let Chart0011;
-let Chart0010;
+///////// old chart code starts here //////////
+
+// let Chart0011;
+// let Chart0010;
 
 // Function to create and update a bar chart for 0011
-function createAndUpdateBarChart0011(back, front) {
-  // Get the canvas element by its ID
-  const ctx = document.getElementById("Chart0011").getContext("2d");
+// function createAndUpdateBarChart0011(back, front) {
+//   // Get the canvas element by its ID
+//   const ctx = document.getElementById("Chart0011").getContext("2d");
 
-  // Initialize or update chart data
-  if (!Chart0011) {
-    // Create a new bar chart instance with initial data
-    Chart0011 = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Backsensor", "Frontsensor"],
-        datasets: [
-          {
-            label: "Right foot (0011)",
-            data: [back, front],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)", // Color for the first bar
-              "rgba(54, 162, 235, 0.2)", // Color for the second bar
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)", // Border color for the first bar
-              "rgba(54, 162, 235, 1)", // Border color for the second bar
-            ],
-            borderWidth: 1, // Border width for all bars
-          },
-        ],
-      },
-      options: {
-        // maintainAspectRatio: false, // Disable aspect ratio constraint
-        scales: {
-          y: {
-            max: 200,
-            beginAtZero: true,
-          },
-        },
-      },
-    });
-  } else {
-    // Update the chart data with new values
-    Chart0011.data.datasets[0].data = [back, front];
-    Chart0011.update();
+//   // Initialize or update chart data
+//   if (!Chart0011) {
+//     // Create a new bar chart instance with initial data
+//     Chart0011 = new Chart(ctx, {
+//       type: "bar",
+//       data: {
+//         labels: ["Backsensor", "Frontsensor"],
+//         datasets: [
+//           {
+//             label: "Right foot (0011)",
+//             data: [back, front],
+//             backgroundColor: [
+//               "rgba(255, 99, 132, 0.2)", // Color for the first bar
+//               "rgba(54, 162, 235, 0.2)", // Color for the second bar
+//             ],
+//             borderColor: [
+//               "rgba(255, 99, 132, 1)", // Border color for the first bar
+//               "rgba(54, 162, 235, 1)", // Border color for the second bar
+//             ],
+//             borderWidth: 1, // Border width for all bars
+//           },
+//         ],
+//       },
+//       options: {
+//         // maintainAspectRatio: false, // Disable aspect ratio constraint
+//         scales: {
+//           y: {
+//             max: 300,
+//             beginAtZero: true,
+//           },
+//         },
+//       },
+//     });
+//   } else {
+//     // Update the chart data with new values
+//     Chart0011.data.datasets[0].data = [back, front];
+
+//     const chartInterval_0011 = setInterval(() => {
+//       console.log("updating 0011");
+//       // Call the update method for your chart here
+//       Chart0011.update();
+//     }, 50);
+//     // Chart0011.update();
+//   }
+// }
+
+// // Function to create and update a bar chart for 0010
+// function createAndUpdateBarChart0010(back, front) {
+//   // Get the canvas element by its ID
+//   const ctx = document.getElementById("Chart0010").getContext("2d");
+
+//   // Initialize or update chart data
+//   if (!Chart0010) {
+//     // Create a new bar chart instance with initial data
+//     Chart0010 = new Chart(ctx, {
+//       type: "bar",
+//       data: {
+//         labels: ["Backsensor", "Frontsensor"],
+//         datasets: [
+//           {
+//             label: "Left foot (0010)",
+//             data: [back, front],
+//             backgroundColor: [
+//               "rgba(255, 99, 132, 0.2)", // Color for the first bar
+//               "rgba(54, 162, 235, 0.2)", // Color for the second bar
+//             ],
+//             borderColor: [
+//               "rgba(255, 99, 132, 1)", // Border color for the first bar
+//               "rgba(54, 162, 235, 1)", // Border color for the second bar
+//             ],
+//             borderWidth: 1, // Border width for all bars
+//           },
+//         ],
+//       },
+//       options: {
+//         // maintainAspectRatio: false, // Disable aspect ratio constraint
+//         scales: {
+//           y: {
+//             max: 300,
+//             beginAtZero: true,
+//           },
+//         },
+//       },
+//     });
+//   } else {
+//     // Update the chart data with new values
+//     Chart0010.data.datasets[0].data = [back, front];
+
+//     const chartInterval_0010 = setInterval(() => {
+//       console.log("updating 0010");
+//       // Call the update method for your chart here
+//       Chart0010.update();
+//     }, 50);
+//     // Chart0010.update();
+//   }
+// }
+
+///////// old chart code ends here //////////
+
+// // Define a global variable for charts
+let charts = {};
+let chartElements = {};
+
+function getChartElement(id) {
+  if (!chartElements[id]) {
+    chartElements[id] = document.getElementById(id);
   }
+  return chartElements[id];
 }
 
-// Function to create and update a bar chart for 0010
-function createAndUpdateBarChart0010(back, front) {
-  // Get the canvas element by its ID
-  const ctx = document.getElementById("Chart0010").getContext("2d");
+// Create or update a throttled bar chart
+const createOrUpdateThrottledBarChart = throttle(function (
+  chartId,
+  chartLabel,
+  back,
+  front
+) {
+  const ctx = getChartElement(chartId).getContext("2d");
 
-  // Initialize or update chart data
-  if (!Chart0010) {
-    // Create a new bar chart instance with initial data
-    Chart0010 = new Chart(ctx, {
+  if (!charts[chartId]) {
+    // Create a new chart instance
+    charts[chartId] = new Chart(ctx, {
       type: "bar",
       data: {
         labels: ["Backsensor", "Frontsensor"],
         datasets: [
           {
-            label: "Left foot (0010)",
+            label: chartLabel,
             data: [back, front],
             backgroundColor: [
-              "rgba(255, 99, 132, 0.2)", // Color for the first bar
-              "rgba(54, 162, 235, 0.2)", // Color for the second bar
+              "rgba(255, 99, 132, 0.2)", // Color for the back sensor
+              "rgba(54, 162, 235, 0.2)", // Color for the front sensor
             ],
             borderColor: [
-              "rgba(255, 99, 132, 1)", // Border color for the first bar
-              "rgba(54, 162, 235, 1)", // Border color for the second bar
+              "rgba(255, 99, 132, 1)", // Border color for the back sensor
+              "rgba(54, 162, 235, 1)", // Border color for the front sensor
             ],
-            borderWidth: 1, // Border width for all bars
+            borderWidth: 1, // Border width for both sensors
           },
         ],
       },
       options: {
-        // maintainAspectRatio: false, // Disable aspect ratio constraint
+        animation: false,
         scales: {
           y: {
-            max: 200,
+            max: 300,
             beginAtZero: true,
           },
         },
@@ -179,7 +267,30 @@ function createAndUpdateBarChart0010(back, front) {
     });
   } else {
     // Update the chart data with new values
-    Chart0010.data.datasets[0].data = [back, front];
-    Chart0010.update();
+    charts[chartId].data.datasets[0].data = [back, front];
+    charts[chartId].update();
   }
+},
+50); // Adjust the throttle delay
+
+// Throttle function do control how often the chart.update function is being executed
+function throttle(fn, delay) {
+  let lastExecutionTime = 0;
+  let timeoutId;
+
+  return function (...args) {
+    const currentTime = Date.now();
+
+    if (currentTime - lastExecutionTime >= delay) {
+      clearTimeout(timeoutId);
+      lastExecutionTime = currentTime;
+      fn.apply(this, args);
+    } else {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        lastExecutionTime = currentTime;
+        fn.apply(this, args);
+      }, delay);
+    }
+  };
 }
