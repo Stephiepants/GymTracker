@@ -16,8 +16,33 @@ limitations under the License.
   <meta charset="utf-8">
   <!-- Configure the viewport for responsive design -->
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no">
+  <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
   <!-- Define some CSS styles -->
   <style>
+        #heatmap-container {
+      position: absolute;
+      width: 450px;
+      height: 300px;
+      top: 550px;  /* Adjust this value to move the container up */
+      left: 840px;  /* Adjust this value to move the container to the right */
+    }
+
+
+    #background-image {
+      width: 100%;
+      height: 100%;
+      position: absolute; /* Position the image absolutely within the relative positioned container */
+      z-index: 1; /* Set the stack order lower than the heatmap */
+    }
+
+    .heatmap {
+      position: absolute; /* Position absolutely within the relative positioned container */
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2; /* Set the stack order higher than the image */
+    }
     /* Remove default margin for the body */
     body {
       margin: 0;
@@ -38,6 +63,22 @@ limitations under the License.
     #scatter-gl-container {
       position: relative;
     }
+    /* styling for the charts */
+  .canvas-container-0011 {
+    height: 250px;
+    width: 300px;
+    margin: auto;
+    border: 2px solid green;
+    position: absolute; top: 80%; left: 65%; transform: translate(-50%, -50%);
+  }
+
+  .canvas-container-0010 {
+    height: 250px;
+    width: 300px;
+    margin: auto;
+    border: 2px solid blue;
+    position: absolute; top: 80%; left: 45%; transform: translate(-50%, -50%);
+  }
   </style>
   <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
@@ -62,6 +103,10 @@ limitations under the License.
       <div class="canvas-wrapper">
         <!-- Canvas element for rendering output -->
         <canvas id="output"></canvas>
+        <div id="angle-display-left-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees</div>
+      <div id="angle-display-right-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
+      <div id="angle-display-left-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
+      <div id="angle-display-right-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
         <!-- Video element for displaying video feed -->
         <video id="video" playsinline style="
           -webkit-transform: scaleX(-1);
@@ -71,19 +116,12 @@ limitations under the License.
           height: auto;
           ">
         </video>
+        <div id="heatmap-container">
+          <img id="background-image" src="images/feet_heatmap.jpeg" alt="Background Image">
+        <div class="heatmap"></div>
       </div>
       <!-- Container for 3D scatter plot (not visible in this code) -->
       <div id="scatter-gl-container"></div>
-
-      <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
-      <!-- Display for angle information -->
-      <!-- Display for angle information with an inline style -->
-      <div id="angle-display-left-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees</div>
-      <div id="angle-display-right-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
-      <div id="angle-display-left-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
-      <div id="angle-display-right-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
-      <!-- Numerical value display centered in the middle of the screen -->
-      <!--<div id="numerical-value-display" style="position: absolute; top: 60%; left: 40%; font-size: 24px; color: red;">ForcePlate value: <span id="numerical-value">0</span> Unit?</div>-->
       <div style="position: absolute; top: 20%; left: 55%; transform: translate(-50%, -50%);">
         <canvas id="forcePlateChart" width="400" height="200"></canvas>
       </div>
@@ -109,22 +147,3 @@ limitations under the License.
 <!-- Include your custom JavaScript file (index.js) for functionality -->
 <script src="src/index.js"></script>
 </html>
-
-
-<style>
-  /* styling for the charts */
-  .canvas-container-0011 {
-    height: 250px;
-    width: 300px;
-    margin: auto;
-    border: 2px solid green;
-    position: absolute; top: 80%; left: 65%; transform: translate(-50%, -50%);
-  }
-
-  .canvas-container-0010 {
-    height: 250px;
-    width: 300px;
-    margin: auto;
-    border: 2px solid blue;
-    position: absolute; top: 80%; left: 45%; transform: translate(-50%, -50%);
-  }
