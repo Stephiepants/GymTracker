@@ -294,3 +294,51 @@ function throttle(fn, delay) {
     }
   };
 }
+
+
+// minimal heatmap instance configuration
+var heatmapInstance = h337.create({
+  container: document.querySelector('.heatmap'), // container is required
+  radius: 20,
+});
+
+// Function to generate a random integer between min and max, inclusive
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Array of constant x and y values for the 6 different points
+const points = [
+  {x: 80, y: 120},  //Left foot - pinky point
+  {x: 140, y: 100}, //Left foot - big toe point
+  {x: 120, y: 225}, //Left foot - heel point
+  {x: 310, y: 100}, //Right foot - pinky point
+  {x: 370, y: 120}, //Right foot - big toe point
+  {x: 330, y: 225}, //Right foot - heel point
+];
+
+var numberOfPoints = 0;
+function addRandomDataPoint() {
+  // Use modulo to loop over the 6 points
+  const point = points[numberOfPoints % 6];
+
+  var dataPoint = {
+    x: point.x, // constant x coordinate from the points array
+    y: point.y, // constant y coordinate from the points array
+    value: getRandomInt(1, 750), // random value between 1 and 750
+  };
+  //console.log("DBG: datapoint.value is: ", dataPoint.value)
+  numberOfPoints++;
+
+  if(numberOfPoints <= 100)
+    heatmapInstance.addData(dataPoint);
+  else {
+    heatmapInstance.setData({ data: [] });
+    numberOfPoints = 0;
+  }
+}
+
+// Set an interval to call addRandomDataPoint every 0.1 seconds
+setInterval(addRandomDataPoint, 100);
