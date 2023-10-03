@@ -35,7 +35,20 @@ Once the video is processed, it automatically downloads the video with pose keyp
 
 
 ## How to Run a Demo
-If you want to run any of the demos locally, follow these steps:
+If you want to run any of the demos locally, you need to set up the environment on your computer
+
+First make sure you have node.js, yarn and python installed on your computer. 
+
+To install node.js: 
+https://nodejs.org/en/download 
+
+To install yarn:
+https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable 
+
+To install python:
+https://www.python.org/downloads/ 
+
+Afterwards follow these steps:
 
 1. Go to the demo folder, e.g. `cd live_video`
 
@@ -48,3 +61,9 @@ If you want to run any of the demos locally, follow these steps:
 5. Run the demo. `yarn watch`
 
 6. The demo runs at `localhost:1234`. (Remember to provide URL model parameter e. g. `localhost:1234/?model=movenet`)
+
+## Errors mac:
+If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in live_video folder. 
+
+## Errors windows/linux:
+
