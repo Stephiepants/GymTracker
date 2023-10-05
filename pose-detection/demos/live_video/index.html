@@ -19,7 +19,7 @@ limitations under the License.
   <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
   <!-- Define some CSS styles -->
   <style>
-        #heatmap-container {
+    #heatmap-container {
       position: absolute;
       width: 450px;
       height: 300px;
@@ -27,8 +27,7 @@ limitations under the License.
       left: 840px;  /* Adjust this value to move the container to the right */
     }
 
-
-    #background-image {
+    #background-image-heatmaps {
       width: 100%;
       height: 100%;
       position: absolute; /* Position the image absolutely within the relative positioned container */
@@ -43,6 +42,30 @@ limitations under the License.
       height: 100%;
       z-index: 2; /* Set the stack order higher than the image */
     }
+    .title-container {
+    display: flex;         /* Make this container a flexbox container */
+    align-items: center;   /* Vertically center the items in the container */
+    position: relative;
+    width: 100%;  /* Adjust as needed */
+    height: auto;  /* This will allow the container to adjust to the height of its content */
+    padding-left: 0px; /* Adjust this value to bring content closer to the edge */
+    padding-top: 10px;  /* This will give space at the top for the title */
+    }
+
+    .title {
+        text-align: center;
+        margin-left: -35px;  /* Adjusting the position using margin instead of absolute positioning */
+        z-index: 4;
+    }
+
+    .logo-image {
+    margin-right: 20px;    /* Add some space between the image and the title */
+    margin-left: -25px; /* Use a negative margin to pull the image closer to the edge */
+    width: auto;           /* Adjust as needed */
+    height: 175px;          /* Adjust as needed, this will control the image size */
+    z-index: 4;
+    }
+
     /* Remove default margin for the body */
     body {
       margin: 0;
@@ -79,14 +102,29 @@ limitations under the License.
     border: 2px solid blue;
     position: absolute; top: 80%; left: 45%; transform: translate(-50%, -50%);
   }
+  body {
+  background-image: url('https://wallpapercave.com/wp/wp7661163.jpg');
+  background-repeat:no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+}
   </style>
   <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
   <!-- !!MODIFIED BY MARCUS!! (END) -->
 </head>
 <body>
-  <!-- Statistics display (not visible in this code) -->
-  <div id="stats"></div>
+  <div class="title-container">
+    <img src="images/gymtracker_logo.png" alt="GymTracker Logo" class="logo-image">
+
+    <div class="title">
+        <h1 style="color:#516a77;">GYM TRACKING</h1>
+        <h3 style="color:#516a77;">(YOUR PERSONAL TRANING ANALYZER)</h3>
+    </div>
+</div>
+
+
+  <div id="stats"></div> <!-- Statistics display (not visible in this code) -->
   <button id="connect" disabled>Connect to BLE</button>
   <button id="start" disabled>Start Notifications</button>
   <button id="stop" disabled>Stop Notifications</button>
@@ -104,9 +142,9 @@ limitations under the License.
         <!-- Canvas element for rendering output -->
         <canvas id="output"></canvas>
         <div id="angle-display-left-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees</div>
-      <div id="angle-display-right-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
-      <div id="angle-display-left-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
-      <div id="angle-display-right-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
+        <div id="angle-display-right-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
+        <div id="angle-display-left-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
+        <div id="angle-display-right-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
         <!-- Video element for displaying video feed -->
         <video id="video" playsinline style="
           -webkit-transform: scaleX(-1);
@@ -117,7 +155,7 @@ limitations under the License.
           ">
         </video>
         <div id="heatmap-container">
-          <img id="background-image" src="images/feet_heatmap.jpeg" alt="Background Image">
+          <img id="background-image-heatmaps" src="images/feet_heatmap.jpeg" alt="Background Image">
         <div class="heatmap"></div>
       </div>
       <!-- Container for 3D scatter plot (not visible in this code) -->
