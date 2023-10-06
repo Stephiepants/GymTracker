@@ -23,8 +23,8 @@ limitations under the License.
       position: absolute;
       width: 450px;
       height: 300px;
-      top: 550px;  /* Adjust this value to move the container up */
-      left: 840px;  /* Adjust this value to move the container to the right */
+      top: 600px;  /* Adjust this value to move the container up */
+      left: 50px;  /* Adjust this value to move the container to the right */
     }
 
     #background-image-heatmaps {
@@ -65,6 +65,46 @@ limitations under the License.
     height: 175px;          /* Adjust as needed, this will control the image size */
     z-index: 4;
     }
+    .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align items to the left */
+    margin-left: 25px;
+    }
+    .button-container button {
+      background-color: rgb(52, 152, 219); /* Button color */
+      color: white; /* Text color */
+      padding: 10px 15px; /* Padding around the text */
+      border: none; /* Remove default border */
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer; /* Change cursor to hand icon when hovering */
+      transition: background-color 0.3s; /* Smooth transition for hover effects */
+    }
+
+    .button-container button:hover {
+      background-color: rgb(41, 128, 185); /* Darker color when button is hovered over */
+    }
+
+    .button-container button:disabled {
+      background-color: rgb(189, 195, 199); /* Color for disabled buttons */
+      cursor: not-allowed; /* Indicate that button is not clickable */
+    }
+
+    #connect {
+    margin-left: 130px; /* Adjust this value to position the button further or closer to the left */
+    }
+    .bottom-buttons {
+        display: flex; /* Makes the children (buttons) align horizontally */
+        margin-top: 10px; /* Add some space between the 'Connect' button and the other buttons */
+        margin-left: 95px; /* Push the buttons to the right by 50 pixels */
+    }
+    .bottom-buttons button:not(:last-child) {
+    margin-right: 35px;
+    }
+    .bottom-buttons button {
+        margin-left: 5px; /* Space between horizontally aligned buttons */
+        padding: 10px;
+    }
 
     /* Remove default margin for the body */
     body {
@@ -86,22 +126,56 @@ limitations under the License.
     #scatter-gl-container {
       position: relative;
     }
-    /* styling for the charts */
+    .chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: absolute;  /* Added */
+    top: 50px;  /* Adjust this value to move up/down */
+    left: 725px;  /* Adjust this value to move left/right */
+  }
+
+  .forcePlateChart-container {
+      height: 200px;  /* added 'px' unit */
+      width: 400px;   /* added 'px' unit */
+      margin: auto;
+  }
+
+    .canvas-common-style {
+      height: 250px;
+      width: 300px;
+      margin: auto;
+      border: 3px solid rgb(81, 106, 119); /* Slightly thicker border */
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+      transition: transform 0.2s; /* Smooth transition for hover effect */
+  }
+
+  .canvas-common-style:hover {
+      transform: scale(1.03); /* Slight zoom on hover */
+  }
+
   .canvas-container-0011 {
-    height: 250px;
-    width: 300px;
-    margin: auto;
-    border: 2px solid green;
-    position: absolute; top: 80%; left: 65%; transform: translate(-50%, -50%);
+      height: 250px;
+      width: 300px;
+      margin: auto;
+      border: 2px solid rgb(81, 106, 119);
   }
 
   .canvas-container-0010 {
-    height: 250px;
-    width: 300px;
-    margin: auto;
-    border: 2px solid blue;
-    position: absolute; top: 80%; left: 45%; transform: translate(-50%, -50%);
+      height: 250px;
+      width: 300px;
+      margin: auto;
+      border: 2px solid rgb(81, 106, 119);
   }
+
+  .sub-chart-container {
+      display: flex;  /* Aligns its children side by side */
+      gap: 20px;  /* Space between the two charts */
+  }
+
+
   body {
   background-image: url('https://wallpapercave.com/wp/wp7661163.jpg');
   background-repeat:no-repeat;
@@ -118,20 +192,24 @@ limitations under the License.
     <img src="images/gymtracker_logo.png" alt="GymTracker Logo" class="logo-image">
 
     <div class="title">
-        <h1 style="color:#516a77;">GYM TRACKING</h1>
-        <h3 style="color:#516a77;">(YOUR PERSONAL TRANING ANALYZER)</h3>
+        <h1 style="color: rgb(81, 106, 119);">GYM TRACKING</h1>
+        <h3 style="color: rgb(81, 106, 119);">(YOUR PERSONAL TRANING ANALYZER)</h3>
     </div>
 </div>
 
-
   <div id="stats"></div> <!-- Statistics display (not visible in this code) -->
-  <button id="connect" disabled>Connect to BLE</button>
-  <button id="start" disabled>Start Notifications</button>
-  <button id="stop" disabled>Stop Notifications</button>
-  <button id="writeStart" disabled>Write "START" to BLE</button>
-  <button id="writeStop" disabled>Write "STOP" to BLE</button>
-  <button id="writeTare" disabled>Write "TARE" to BLE</button>
-  <button id="battery_level" disabled>Check Battery_level</button>
+
+  <div class="button-container">
+    <button id="connect" disabled>Connect to ForcePlates</button>
+    <div class="bottom-buttons">
+        <button id="start" disabled>Start</button>
+        <button id="writeTare" disabled>"Zero"</button>
+        <button id="stop" disabled>Stop</button>
+    </div>
+</div>
+  <!-- <button id="writeStart" disabled>Write "START" to BLE</button>
+  <button id="writeStop" disabled>Write "STOP" to BLE</button> -->
+  <!-- <button id="battery_level" disabled>Check Battery_level</button> -->
 
   <!-- Main content container -->
   <div id="main">
@@ -141,10 +219,10 @@ limitations under the License.
       <div class="canvas-wrapper">
         <!-- Canvas element for rendering output -->
         <canvas id="output"></canvas>
-        <div id="angle-display-left-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees</div>
-        <div id="angle-display-right-arm" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
-        <div id="angle-display-left-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
-        <div id="angle-display-right-side" style="display: none; color: rgb(0, 0, 255); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
+        <div id="angle-display-left-arm" style="display: none; color: rgb(0, 255, 106); font-size: 24px;">Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees</div>
+        <div id="angle-display-right-arm" style="display: none; color: rgb(0, 255, 106); font-size: 24px;">Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees</div>
+        <div id="angle-display-left-side" style="display: none; color: rgb(0, 255, 106); font-size: 24px;">Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees</div>
+        <div id="angle-display-right-side" style="display: none; color: rgb(0, 255, 106); font-size: 24px;">Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees</div>
         <!-- Video element for displaying video feed -->
         <video id="video" playsinline style="
           -webkit-transform: scaleX(-1);
@@ -160,20 +238,20 @@ limitations under the License.
       </div>
       <!-- Container for 3D scatter plot (not visible in this code) -->
       <div id="scatter-gl-container"></div>
-      <div style="position: absolute; top: 20%; left: 55%; transform: translate(-50%, -50%);">
-        <canvas id="forcePlateChart" width="400" height="200"></canvas>
-      </div>
-      <div class="canvas-container-0011">
-        <canvas
-          id="Chart0011"
-          style="display: block; box-sizing: border-box"
-        ></canvas>
-      </div>
-      <div class="canvas-container-0010">
-        <canvas
-          id="Chart0010"
-          style="display: block; box-sizing: border-box"
-        ></canvas>
+      <div class="chart-container">
+        <div class="canvas-container forcePlateChart-container">
+            <canvas id="forcePlateChart" width="400" height="200"></canvas>
+        </div>
+        <div class="sub-chart-container">  <!-- New container for the two bottom charts -->
+            <div class="canvas-container canvas-common-style canvas-container-0010">
+                <canvas id="Chart0010"></canvas>
+            </div>
+            <div class="canvas-container canvas-common-style canvas-container-0011">
+                <canvas id="Chart0011"></canvas>
+            </div>
+        </div>
+    </div>
+
       </div>
       <!-- !!MODIFIED BY MARCUS!! (END) -->
     </div>

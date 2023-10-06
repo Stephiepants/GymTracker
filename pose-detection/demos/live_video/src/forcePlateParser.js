@@ -212,6 +212,7 @@ function calculateAverage(array) {
 // }
 
 ///////// old chart code ends here //////////
+//import Chart from 'chart.js'; // Import Chart.js library for chart rendering
 
 // // Define a global variable for charts
 let charts = {};
@@ -295,6 +296,100 @@ function throttle(fn, delay) {
   };
 }
 
+//////////////Line Chart//////////////////////
+
+//Chart-related code below this line
+// Get a reference to the canvas element
+const chartCanvas = document.getElementById("forcePlateChart");
+
+// Initialize the Chart.js chart with default data
+const ctx_chart = chartCanvas.getContext("2d");
+
+// Define the configuration for the Chart.js chart
+const chartConfig = {
+  type: "line", // Specify the chart type as a line chart
+  data: {
+    labels: [], // An array to hold X-axis labels (timestamps or time intervals)
+    datasets: [
+      {
+        label: "Average Force", // Label for the dataset
+        data: [], // An array to hold numerical data points for the force plate values
+        borderColor: "rgb(0, 255, 106)", // Color of the line
+        borderWidth: 4, // Width of the line
+        fill: false, // Fill the area under the line (set to 'false' for just lines)
+      },
+    ],
+  },
+  options: {
+    scales: {
+      x: {
+        type: "linear", // X-axis scale type is linear
+        position: "bottom", // X-axis position at the bottom
+        display: false,
+      },
+      y: {
+        beginAtZero: true, // Start Y-axis from zero
+        max: 150, // Set the maximum value for the Y-axis
+        display: true,
+      },
+    },
+  },
+};
+
+// Create a new Chart.js chart instance using the canvas context and configuration
+const forcePlateChart = new Chart(ctx_chart, chartConfig);
+
+/// Function to update the chart with new data or maintain the existing data
+function updateChart(newNumericValue, time) {
+  //console.log('DBG: updateChart called with value:', newNumericValue);
+  const timestamp = new Date().toLocaleTimeString(); // Replace with actual timestamp
+  //console.log('DBG: Timestamp:', time);
+
+  // Add the new data point to the chart
+  forcePlateChart.data.labels.push(time);
+  //console.log('DBG: ForcePlateChart.data.datasets:', forcePlateChart.data.datasets[0]);
+  forcePlateChart.data.datasets[0].data.push(newNumericValue);
+
+  // Limit the number of data points displayed
+  const maxDataPoints = 50;
+  if (forcePlateChart.data.labels.length > maxDataPoints) {
+    // Clear the labels and data arrays
+    resetChart();
+  }
+  // Update the chart
+  else forcePlateChart.update();
+}
+
+// Function to reset the chart completely
+function resetChart() {
+  // Clear the labels and data arrays
+  forcePlateChart.data.labels = [];
+  forcePlateChart.data.datasets[0].data = [];
+
+  // Reset the time variable
+  time = 0;
+  console.log("DBG: Chart RESET!");
+
+  // Update the chart to reflect the changes
+  forcePlateChart.update();
+}
+
+let time = 0;
+// Simulate value changes (replace with your data source)
+setInterval(() => {
+  const newValue = Math.random() * 100; // Generate a random value
+  time = time + 1;
+  //createAndUpdateBarChart0011(newValue, newValue); // creates and updates the chart with the values from sensor 0011
+  //createAndUpdateBarChart0010(newValue, newValue); //creates and updates the chart with the values from sensor 0010
+  updateChart(newValue, time);
+}, 250); // Update the chart every X milliseconds
+
+
+
+
+
+
+////////////Heatmaps/////////////////////
 
 // minimal heatmap instance configuration
 var heatmapInstance = h337.create({

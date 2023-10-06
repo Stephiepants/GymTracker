@@ -15,10 +15,10 @@ var acquiredBatteryGATTCharacteristic;
 document.querySelector("#connect").disabled = false;
 document.querySelector("#start").disabled = true;
 document.querySelector("#stop").disabled = true;
-document.querySelector("#writeStart").disabled = true;
-document.querySelector("#writeStop").disabled = true;
+/* document.querySelector("#writeStart").disabled = true;
+document.querySelector("#writeStop").disabled = true */;
 document.querySelector("#writeTare").disabled = true;
-document.querySelector("#battery_level").disabled = true;
+/* document.querySelector("#battery_level").disabled = true; */
 //document.querySelector('#writeGain1').disabled = true
 //document.querySelector('#writeGain2').disabled = true
 //document.querySelector('#writeFlash').disabled = true
@@ -82,10 +82,10 @@ export async function onConnectButtonClick() {
     // console.log('> Battery Level is ' + value.getUint8(0) + '%');
 
     document.querySelector("#start").disabled = false;
-    document.querySelector("#writeStart").disabled = false;
-    document.querySelector("#writeStop").disabled = false;
+   /*  document.querySelector("#writeStart").disabled = false;
+    document.querySelector("#writeStop").disabled = false; */
     document.querySelector("#writeTare").disabled = false;
-    document.querySelector("#battery_level").disabled = false;
+   /*  document.querySelector("#battery_level").disabled = false; */
   } catch (error) {
     console.log("Argh! " + error);
   }

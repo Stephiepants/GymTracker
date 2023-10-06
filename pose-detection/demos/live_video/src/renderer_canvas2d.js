@@ -17,7 +17,6 @@
 // Import necessary libraries/modules
 import * as posedetection from "@tensorflow-models/pose-detection"; // Import TensorFlow pose detection library
 import * as scatter from "scatter-gl"; // Import scatter plot library for 3D rendering
-//import Chart from 'chart.js'; // Import Chart.js library for chart rendering
 
 // Import configuration parameters from the 'params.js' file
 import * as params from "./params";
@@ -476,7 +475,7 @@ export class RendererCanvas2d {
 
 ////!!BELOW MODIFIED BY MARCUS (START)!!////
 
-//Chart-related code below this line
+/* //Chart-related code below this line
 // Get a reference to the canvas element
 const chartCanvas = document.getElementById("forcePlateChart");
 
@@ -560,7 +559,7 @@ setInterval(() => {
   //createAndUpdateBarChart0011(newValue, newValue); // creates and updates the chart with the values from sensor 0011
   //createAndUpdateBarChart0010(newValue, newValue); //creates and updates the chart with the values from sensor 0010
   updateChart(newValue, time);
-}, 250); // Update the chart every X milliseconds
+}, 250); // Update the chart every X milliseconds */
 
 ////!!MODIFIED BY MARCUS (END)!!////
 
@@ -572,10 +571,10 @@ import * as BLE_forcePlates from "./BLE_forceplates";
 document.querySelector("#connect").disabled = false;
 document.querySelector("#start").disabled = true;
 document.querySelector("#stop").disabled = true;
-document.querySelector("#writeStart").disabled = true;
-document.querySelector("#writeStop").disabled = true;
+/* document.querySelector("#writeStart").disabled = true;
+document.querySelector("#writeStop").disabled = true; */
 document.querySelector("#writeTare").disabled = true;
-document.querySelector("#battery_level").disabled = true;
+/* document.querySelector("#battery_level").disabled = true; */
 
 document.querySelector("#connect").addEventListener("click", function () {
   if (BLE_forcePlates.isWebBluetoothEnabled()) {
@@ -594,7 +593,7 @@ document.querySelector("#stop").addEventListener("click", function (event) {
     BLE_forcePlates.onStopButtonClick();
   }
 });
-document.querySelector("#writeStart").addEventListener("click", function () {
+/* document.querySelector("#writeStart").addEventListener("click", function () {
   if (BLE_forcePlates.isWebBluetoothEnabled()) {
     BLE_forcePlates.onWriteButtonClick(ForcePlateUUIDS.START);
   }
@@ -603,18 +602,18 @@ document.querySelector("#writeStop").addEventListener("click", function () {
   if (BLE_forcePlates.isWebBluetoothEnabled()) {
     BLE_forcePlates.onWriteButtonClick(ForcePlateUUIDS.STOP);
   }
-});
+}); */
 document.querySelector("#writeTare").addEventListener("click", function () {
   if (BLE_forcePlates.isWebBluetoothEnabled()) {
     BLE_forcePlates.onWriteButtonClick(ForcePlateUUIDS.TARE);
   }
 });
 
-document.querySelector("#battery_level").addEventListener("click", function () {
+/* document.querySelector("#battery_level").addEventListener("click", function () {
   if (BLE_forcePlates.isWebBluetoothEnabled()) {
     BLE_forcePlates.onBatteryButtonClick();
   }
-});
+}); */
 
 /////////////Web BLE END///////////////////////////////////
 
