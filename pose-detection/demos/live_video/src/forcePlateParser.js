@@ -304,7 +304,7 @@ const createOrUpdateThrottledBarChart = throttle(function (
         },
         scales: {
           y: {
-            max: 500,
+            max: 400,
             beginAtZero: true,
             ticks: {
               stepSize: 50,
