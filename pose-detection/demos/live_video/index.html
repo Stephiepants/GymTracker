@@ -137,11 +137,19 @@ limitations under the License.
   }
 
   .forcePlateChart-container {
-      height: 200px;  /* added 'px' unit */
-      width: 400px;   /* added 'px' unit */
+      height: 300px;  /* added 'px' unit */
+      width: 500px;   /* added 'px' unit */
       margin: auto;
   }
-
+  .canvas-averageForce-style {
+      height: 300px;
+      width: 500px;
+      margin: auto;
+      border: 3px solid rgb(81, 106, 119); /* Slightly thicker border */
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+      transition: transform 0.2s; /* Smooth transition for hover effect */
+  }
     .canvas-common-style {
       height: 250px;
       width: 300px;
@@ -152,6 +160,9 @@ limitations under the License.
       transition: transform 0.2s; /* Smooth transition for hover effect */
   }
 
+  .canvas-averageForce-style:hover {
+      transform: scale(1.03); /* Slight zoom on hover */
+  }
   .canvas-common-style:hover {
       transform: scale(1.03); /* Slight zoom on hover */
   }
@@ -175,7 +186,6 @@ limitations under the License.
       gap: 20px;  /* Space between the two charts */
   }
 
-
   body {
   background-image: url('https://wallpapercave.com/wp/wp7661163.jpg');
   background-repeat:no-repeat;
@@ -184,7 +194,6 @@ limitations under the License.
 }
   </style>
   <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
   <!-- !!MODIFIED BY MARCUS!! (END) -->
 </head>
 <body>
@@ -239,8 +248,8 @@ limitations under the License.
       <!-- Container for 3D scatter plot (not visible in this code) -->
       <div id="scatter-gl-container"></div>
       <div class="chart-container">
-        <div class="canvas-container forcePlateChart-container">
-            <canvas id="forcePlateChart" width="400" height="200"></canvas>
+        <div class="canvas-container canvas-averageForce-style forcePlateChart-container">
+            <canvas id="forcePlateChart"></canvas>
         </div>
         <div class="sub-chart-container">  <!-- New container for the two bottom charts -->
             <div class="canvas-container canvas-common-style canvas-container-0010">
@@ -256,6 +265,7 @@ limitations under the License.
       <!-- !!MODIFIED BY MARCUS!! (END) -->
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
 </body>
 <!-- Include external JavaScript libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>

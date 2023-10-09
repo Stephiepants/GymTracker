@@ -1,4 +1,8 @@
 // Define a function to parse sensor data
+let forcePair1;
+let forcePair2;
+let total = 0;
+let canUpdateChart = true;  // Flag to determine if chart can be updated
 
 export function parseSensorData(name, event) {
   // Extract the sensor data from the event's buffer
@@ -7,7 +11,7 @@ export function parseSensorData(name, event) {
 
   // Check if the first byte (startByte) is correct (equal to 12)
   if (data[0] !== 12) {
-    console.log("DBG: StartByte data[0] =! 12, returning null");
+    //console.log("DBG: StartByte data[0] =! 12, returning null");
     return null; // If it's not 12, return null to indicate an error
   }
 
@@ -26,10 +30,19 @@ export function parseSensorData(name, event) {
   // Loop through the sensor data buffer to parse force data
   for (let i = 4; i < 20; i += 4) {
     // Extract and convert force pair 1
-    const forcePair1 = intToFloat(data[i + 1] | (data[i] << 8)); // bakre sensorn
+    forcePair1 = intToFloat(data[i + 1] | (data[i] << 8)); // bakre sensorn
+    /* const backRightSensor = data[4]; // index 4 & 8 & 12 & 16 is back right sensor
+    console.log("backRightsensor " + backRightSensor); */
 
+    /* const backLeftSensor = intToFloat(data[5]); //  index 5 & 9 & 13 & 17 is left back sensor
+    console.log("backLeftsensor " + backLeftSensor); */
+    /* const frontRightSensor = intToFloat(data[6] << 8); // index 6 & 10 & 14 & 18 is front right sensor
+    console.log("frontrightsensor " + frontRightSensor); */
+
+    // const frontLeftSensor = intToFloat(data[14]); // index 7 & 11 & 15 & 19 is front left sensor
+    // console.log("frontlefttsensor " + frontLeftSensor);
     // Extract and convert force pair 2
-    const forcePair2 = intToFloat(data[i + 3] | (data[i + 2] << 8)); // främre sensorn
+    forcePair2 = intToFloat(data[i + 3] | (data[i + 2] << 8)); // främre sensorn
 
     // Calculate the total force for this data point
     const totalForce = forcePair1 + forcePair2;
@@ -37,13 +50,14 @@ export function parseSensorData(name, event) {
     const chartId = name === "ForcePlate0011" ? "Chart0011" : "Chart0010";
     const chartLabel =
       name === "ForcePlate0011" ? "Sensor Values 0011" : "Sensor Values 0010";
-    //console.log(chartId + " " + chartLabel);
-    createOrUpdateThrottledBarChart(
-      chartId,
-      chartLabel,
-      forcePair1,
-      forcePair2
-    );
+
+    addDataPointToHeatmap(chartId, forcePair2, forcePair1),
+      createOrUpdateThrottledBarChart(
+        chartId,
+        chartLabel,
+        forcePair1,
+        forcePair2
+      );
 
     ///////// old chart code starts here //////////
     // if (name == "ForcePlate0011") {
@@ -66,7 +80,25 @@ export function parseSensorData(name, event) {
 
   // Calculate the average force from the totalForceArr
   const avgForce = calculateAverage(totalForceArr);
-  //  console.log("this is the average force" + avgForce);
+
+  const updateInterval = 100;  // Time in milliseconds (1 second in this case)
+
+  // Function to handle chart updates
+  function handleUpdate(avgForce, time) {
+      if (canUpdateChart) {
+          // Update the chart
+          console.log("this is the average force" + avgForce);
+          updateChart(avgForce, time);
+
+          // Prevent further updates until the interval passes
+          canUpdateChart = false;
+          setTimeout(() => {
+              canUpdateChart = true;
+          }, updateInterval);
+      }
+  }
+
+  if(avgForce > 10) handleUpdate(avgForce,time); //Filters out avgforce values below set value
 
   // Return an object containing the parsed values
   return {
@@ -212,7 +244,6 @@ function calculateAverage(array) {
 // }
 
 ///////// old chart code ends here //////////
-//import Chart from 'chart.js'; // Import Chart.js library for chart rendering
 
 // // Define a global variable for charts
 let charts = {};
@@ -245,8 +276,8 @@ const createOrUpdateThrottledBarChart = throttle(function (
             label: chartLabel,
             data: [back, front],
             backgroundColor: [
-              "rgba(255, 99, 132, 0.2)", // Color for the back sensor
-              "rgba(54, 162, 235, 0.2)", // Color for the front sensor
+              "rgba(255, 99, 132, 0.5)", // Color for the back sensor
+              "rgba(54, 162, 235, 0.5)", // Color for the front sensor
             ],
             borderColor: [
               "rgba(255, 99, 132, 1)", // Border color for the back sensor
@@ -258,11 +289,47 @@ const createOrUpdateThrottledBarChart = throttle(function (
       },
       options: {
         animation: false,
+        plugins: {
+          legend: {
+            labels: {
+              usePointStyle: false,
+              color: "rgb(0, 255, 106)", // Set the font color for labels
+              boxWidth: 0,
+              boxHeight: 0,
+              font: {
+                size: 20 // Set the font size for labels
+              }
+            }
+          }
+        },
         scales: {
           y: {
-            max: 300,
+            max: 500,
             beginAtZero: true,
+            ticks: {
+              stepSize: 50,
+              color: "rgb(0, 255, 106)", // Set the font color for y-axis ticks
+              font: {
+                size: 20 // Set the font size for y-axis ticks
+              }
+            }
           },
+          x: { // x-axis configuration
+            ticks: {
+              font: {
+                size: 20  // Set the font size for x-axis labels
+              },
+              color: (context) => {
+                // Check the label of the tick
+                if (context.tick.label === "Backsensor") {
+                  return "rgb(255, 99, 132)";  // Color for "Backsensor"
+                } else if (context.tick.label === "Frontsensor") {
+                  return "rgb(54, 162, 235)";  // Color for "Frontsensor"
+                }
+                return "rgb(0, 0, 0)";  // Default color for other labels (if any)
+              }
+            }
+          }
         },
       },
     });
@@ -296,8 +363,6 @@ function throttle(fn, delay) {
   };
 }
 
-//////////////Line Chart//////////////////////
-
 //Chart-related code below this line
 // Get a reference to the canvas element
 const chartCanvas = document.getElementById("forcePlateChart");
@@ -317,10 +382,24 @@ const chartConfig = {
         borderColor: "rgb(0, 255, 106)", // Color of the line
         borderWidth: 4, // Width of the line
         fill: false, // Fill the area under the line (set to 'false' for just lines)
+        pointRadius: 0, // No dots for each data point
       },
     ],
   },
   options: {
+    plugins: {
+      legend: {
+        labels: {
+          usePointStyle: false,
+          color: "rgb(0, 255, 106)", // Set the font color for labels
+          boxWidth: 0,
+          boxHeight: 0,
+          font: {
+            size: 20 // Set the font size for labels
+          }
+        }
+      }
+    },
     scales: {
       x: {
         type: "linear", // X-axis scale type is linear
@@ -328,13 +407,24 @@ const chartConfig = {
         display: false,
       },
       y: {
+        type: "linear",
         beginAtZero: true, // Start Y-axis from zero
-        max: 150, // Set the maximum value for the Y-axis
+        min: 0,            // Adjusted to start from 0 for the 100-step increments
+        max: 750,          // Set the maximum value for the Y-axis
         display: true,
+        ticks: {
+          stepSize: 100,
+          color: "rgb(0, 255, 106)", // Set the font color
+          font: {
+            size: 25 // Set the font size
+          }
+        }
       },
     },
   },
 };
+
+
 
 // Create a new Chart.js chart instance using the canvas context and configuration
 const forcePlateChart = new Chart(ctx_chart, chartConfig);
@@ -351,7 +441,7 @@ function updateChart(newNumericValue, time) {
   forcePlateChart.data.datasets[0].data.push(newNumericValue);
 
   // Limit the number of data points displayed
-  const maxDataPoints = 50;
+  const maxDataPoints = 200;
   if (forcePlateChart.data.labels.length > maxDataPoints) {
     // Clear the labels and data arrays
     resetChart();
@@ -375,65 +465,178 @@ function resetChart() {
 }
 
 let time = 0;
-// Simulate value changes (replace with your data source)
+/* // Simulate value changes (replace with your data source)
 setInterval(() => {
   const newValue = Math.random() * 100; // Generate a random value
   time = time + 1;
   //createAndUpdateBarChart0011(newValue, newValue); // creates and updates the chart with the values from sensor 0011
   //createAndUpdateBarChart0010(newValue, newValue); //creates and updates the chart with the values from sensor 0010
   updateChart(newValue, time);
-}, 250); // Update the chart every X milliseconds
+}, 250); // Update the chart every X milliseconds */
 
-
-
-
-
-
-////////////Heatmaps/////////////////////
-
-// minimal heatmap instance configuration
+// // minimal heatmap instance configuration
 var heatmapInstance = h337.create({
-  container: document.querySelector('.heatmap'), // container is required
+  container: document.querySelector(".heatmap"), // container is required
   radius: 20,
+  //max: 100000,
+
+  gradient: {
+    // Adjust the gradient colors
+    ".1": "blue",
+    ".5": "yellow",
+    ".99": "red",
+  },
 });
 
-// Function to generate a random integer between min and max, inclusive
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+heatmapInstance.setDataMax(500);
 
-// Array of constant x and y values for the 6 different points
-const points = [
-  {x: 80, y: 120},  //Left foot - pinky point
-  {x: 140, y: 100}, //Left foot - big toe point
-  {x: 120, y: 225}, //Left foot - heel point
-  {x: 310, y: 100}, //Right foot - pinky point
-  {x: 370, y: 120}, //Right foot - big toe point
-  {x: 330, y: 225}, //Right foot - heel point
-];
+// Create a heatmap instance with custom settings
+// var heatmapInstance = h337.create({
+//   container: document.querySelector(".heatmap"),
+//   maxOpacity: 0.8, // Adjusts the maximum opacity
+//   minOpacity: 0, // Adjusts the minimum opacity
+//   blur: 0.75, // Adjusts the amount of blur
+//   radius: 20, // Adjusts the radius of the datapoint
+//   max: 100000,
+//   gradient: {
+//     // Adjust the gradient colors
+//     ".1": "blue",
+//     ".7": "yellow",
+//     1: "red",
+//   },
+// });
 
-var numberOfPoints = 0;
-function addRandomDataPoint() {
-  // Use modulo to loop over the 6 points
-  const point = points[numberOfPoints % 6];
+// // // Function to generate a random integer between min and max, inclusive
+// function getRandomInt(min, max) {
+//   min = Math.ceil(min);
+//   max = Math.floor(max);
+//   return Math.floor(Math.random() * (max - min + 1)) + min;
+// }
 
-  var dataPoint = {
-    x: point.x, // constant x coordinate from the points array
-    y: point.y, // constant y coordinate from the points array
-    value: getRandomInt(1, 750), // random value between 1 and 750
-  };
-  //console.log("DBG: datapoint.value is: ", dataPoint.value)
-  numberOfPoints++;
+// // // Array of constant x and y values for the 6 different points
+// const points = [
+//   { x: 80, y: 120 }, //Left foot - pinky point
+//   { x: 140, y: 100 }, //Left foot - big toe point
+//   { x: 120, y: 225 }, //Left foot - heel point
+//   { x: 310, y: 100 }, //Right foot - pinky point
+//   { x: 370, y: 120 }, //Right foot - big toe point
+//   { x: 330, y: 225 }, //Right foot - heel point
+// ];
 
-  if(numberOfPoints <= 100)
+// var numberOfPoints = 0;
+// function addRandomDataPoint() {
+//   // Use modulo to loop over the 6 points
+//   const point = points[numberOfPoints % 6];
+
+//   var dataPoint = {
+//     x: point.x, // constant x coordinate from the points array
+//     y: point.y, // constant y coordinate from the points array
+//     value: getRandomInt(1, 750), // random value between 1 and 750
+//   };
+//   //console.log("DBG: datapoint.value is: ", dataPoint.value)
+//   numberOfPoints++;
+
+//   if (numberOfPoints <= 200) heatmapInstance.addData(dataPoint);
+//   else {
+//     heatmapInstance.setData({ data: [] });
+//     numberOfPoints = 0;
+//   }
+// }
+
+// // Set an interval to call addRandomDataPoint every 0.1 seconds
+// setInterval(addRandomDataPoint, 100);
+
+// Object to store information about two different forceplates
+const forceplates = {
+  // Information related to forceplate Chart0010
+  Chart0010: {
+    frontSensorPoints: [
+      { x: 110, y: 110 }, // Coordinates for the Left foot's pinky point
+    ],
+    backSensorPoints: [
+      { x: 120, y: 225 }, // Coordinates for the Left foot's heel point
+    ],
+    frontSensorCounter: 0, // Counter to track the number of points added for the front sensor
+    backSensorCounter: 0, // Counter to track the number of points added for the back sensor
+  },
+
+  // Information related to forceplate Chart0011
+  Chart0011: {
+    frontSensorPoints: [
+      { x: 330, y: 110 }, // Coordinates for the Right foot's pinky point
+    ],
+    backSensorPoints: [
+      { x: 330, y: 225 }, // Coordinates for the Right foot's heel point
+    ],
+    frontSensorCounter: 0, // Counter to track the number of points added for the front sensor
+    backSensorCounter: 0, // Counter to track the number of points added for the back sensor
+  },
+};
+
+// Function to add data points to the heatmap based on forceplate sensor values
+function addDataPointToHeatmap(side, FrontSensor, BackSensor) {
+  // Retrieve the corresponding forceplate object based on the provided side (Chart0010 or Chart0011)
+  const forceplate = forceplates[side];
+
+  // Check if the provided side is valid and exists in the forceplates object
+  if (!forceplate) {
+    console.error("Invalid side provided:", side);
+    return; // Exit the function if the side is invalid
+  }
+
+  // Check if the value from the front sensor exceeds the threshold
+  if (FrontSensor > 20) {
+    const sensorValue = FrontSensor * 0.0001;
+
+    // Determine the point to use based on the frontSensorCounter
+    const point =
+      forceplate.frontSensorPoints[
+        forceplate.frontSensorCounter % forceplate.frontSensorPoints.length
+      ];
+    // Create a data point for the heatmap
+    const dataPoint = {
+      x: point.x,
+      y: point.y,
+      value: sensorValue,
+    };
+
+    // Add the data point to the heatmap instance
     heatmapInstance.addData(dataPoint);
-  else {
+    // Increment the counter for the front sensor
+    forceplate.frontSensorCounter++;
+  }
+
+  // Check if the value from the back sensor exceeds the threshold
+  if (BackSensor > 20) {
+    const sensorValue2 = BackSensor * 0.0001;
+    // Determine the point to use based on the backSensorCounter
+    const point =
+      forceplate.backSensorPoints[
+        forceplate.backSensorCounter % forceplate.backSensorPoints.length
+      ];
+    total += BackSensor;
+    //console.log("this is the total " + total);
+    // Create a data point for the heatmap
+    const dataPoint = {
+      x: point.x,
+      y: point.y,
+      value: sensorValue2,
+    };
+    // Add the data point to the heatmap instance
+    heatmapInstance.addData(dataPoint);
+    // Increment the counter for the back sensor
+    forceplate.backSensorCounter++;
+    // console.log("counter " + forceplate.backSensorCounter);
+  }
+
+  // Check if the combined count of points added for both sensors exceeds 200
+  if (forceplate.frontSensorCounter + forceplate.backSensorCounter > 500) {
+    console.log("reset");
+    // Reset the heatmap data
+
     heatmapInstance.setData({ data: [] });
-    numberOfPoints = 0;
+    // Reset the counters for both sensors
+    forceplate.frontSensorCounter = 0;
+    forceplate.backSensorCounter = 0;
   }
 }
-
-// Set an interval to call addRandomDataPoint every 0.1 seconds
-setInterval(addRandomDataPoint, 100);
