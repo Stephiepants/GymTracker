@@ -62,7 +62,7 @@ export const POSENET_CONFIG = {
 export const MOVENET_CONFIG = {
   maxPoses: 1, // Maximum number of poses to detect (set to 1).
   type: 'lightning', // Type of detection (lightning).
-  scoreThreshold: 0.4, // Minimum confidence score for a pose to be considered valid.
+  scoreThreshold: 0.30, // Minimum confidence score for a pose to be considered valid.
   customModel: '', // Custom model (empty initially).
   enableTracking: false, // Whether to enable pose tracking (false).
 };
