@@ -136,7 +136,7 @@ limitations under the License.
     left: 725px;  /* Adjust this value to move left/right */
   }
 
-  .forcePlateChart-container {
+  .totalForceChart-container {
       height: 300px;  /* added 'px' unit */
       width: 500px;   /* added 'px' unit */
       margin: auto;
@@ -214,6 +214,8 @@ limitations under the License.
         <button id="start" disabled>Start</button>
         <button id="writeTare" disabled>"Zero"</button>
         <button id="stop" disabled>Stop</button>
+        <button id="resetCharts" disabled >Reset Charts</button>
+
     </div>
 </div>
   <!-- <button id="writeStart" disabled>Write "START" to BLE</button>
@@ -248,8 +250,8 @@ limitations under the License.
       <!-- Container for 3D scatter plot (not visible in this code) -->
       <div id="scatter-gl-container"></div>
       <div class="chart-container">
-        <div class="canvas-container canvas-averageForce-style forcePlateChart-container">
-            <canvas id="forcePlateChart"></canvas>
+        <div class="canvas-container canvas-averageForce-style totalForceChart-container">
+            <canvas id="totalForceChart"></canvas>
         </div>
         <div class="sub-chart-container">  <!-- New container for the two bottom charts -->
             <div class="canvas-container canvas-common-style canvas-container-0010">

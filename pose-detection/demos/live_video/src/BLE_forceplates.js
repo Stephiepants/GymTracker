@@ -143,6 +143,7 @@ export async function onStartButtonClick() {
 
     document.querySelector("#start").disabled = true;
     document.querySelector("#stop").disabled = false;
+    document.querySelector("#resetCharts").disabled = false;
   } catch (error) {
     console.log("Argh! " + error);
   }
