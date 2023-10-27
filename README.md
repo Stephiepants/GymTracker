@@ -36,4 +36,6 @@ Afterwards follow these steps:
 If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in live_video folder. 
 
 ## Errors windows/linux:
+Some users need to install "Visual Studio" with the workload "Desktop development with C++" included.
 
+One way to do so is to follow the steps in the following link: https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170
