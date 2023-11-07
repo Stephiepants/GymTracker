@@ -127,15 +127,6 @@ export async function onStartButtonClick() {
     await acquiredNotifyGATTCharacteristic.startNotifications();
     console.log("> Notify Notifications started");
 
-    // Throttle the handleNotification function so that it's not executed more than once every 100ms
-    // const throttledHandleNotification = throttle(handleNotification, 150);
-
-    // Add an event listener to handle incoming notifications
-    // acquiredNotifyGATTCharacteristic.addEventListener(
-    //   "characteristicvaluechanged",
-    //   throttledHandleNotification
-    // );
-
     acquiredNotifyGATTCharacteristic.addEventListener(
       "characteristicvaluechanged",
       handleNotification
@@ -148,25 +139,6 @@ export async function onStartButtonClick() {
     console.log("Argh! " + error);
   }
 }
-
-// function throttle(func, wait) {
-//   let lastFunc;
-//   let lastRan;
-//   return function (...args) {
-//     if (!lastRan) {
-//       func.apply(this, args);
-//       lastRan = Date.now();
-//     } else {
-//       clearTimeout(lastFunc);
-//       lastFunc = setTimeout(function () {
-//         if (Date.now() - lastRan >= wait) {
-//           func.apply(this, args);
-//           lastRan = Date.now();
-//         }
-//       }, wait - (Date.now() - lastRan));
-//     }
-//   };
-// }
 
 export function onWriteButtonClick(valueToWrite) {
   if (acquiredWriteGATTCharacteristic) {

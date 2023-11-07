@@ -478,14 +478,13 @@ function resetChart() {
 var heatmapInstance = h337.create({
   container: document.querySelector(".heatmap"), // container is required
   radius: 20,
-  //max: 100000,
 
   gradient: {
     // Adjust the gradient colors
     "0": "white",
     ".1": "blue",
     ".5": "yellow",
-    "1": "red",
+    ".8": "red",
   },
 });
 
@@ -499,8 +498,8 @@ const forceplates = {
     backSensorPoints: [
       { x: 120, y: 225 }, // Coordinates for the Left foot's heel point
     ],
-    frontSensorCounter: 0, // Counter to track the number of points added for the front sensor
-    backSensorCounter: 0, // Counter to track the number of points added for the back sensor
+    maxFrontValue: 0, // Maximum force value for the front sensor
+    maxBackValue: 0, // Maximum force value for the back sensor
   },
 
   // Information related to forceplate Chart0011
@@ -511,107 +510,104 @@ const forceplates = {
     backSensorPoints: [
       { x: 330, y: 225 }, // Coordinates for the Right foot's heel point
     ],
-    frontSensorCounter: 0, // Counter to track the number of points added for the front sensor
-    backSensorCounter: 0, // Counter to track the number of points added for the back sensor
+    maxFrontValue: 0, // Maximum force value for the front sensor
+    maxBackValue: 0, // Maximum force value for the back sensor
   },
 };
 
-let heatmapTotalValueFront = 0;
-// Function to add data points to the heatmap based on forceplate sensor values
-function addDataPointToHeatmap(side, FrontSensor, BackSensor) {
-  // Retrieve the corresponding forceplate object based on the provided side (Chart0010 or Chart0011)
-  const forceplate = forceplates[side];
+// Decay factor per update
+const decayFactor = 0.95;
 
-  // Check if the provided side is valid and exists in the forceplates object
+// Decay the max values over time to allow dynamic changes
+function decayMaxValues() {
+  Object.keys(forceplates).forEach((key) => {
+    let forceplate = forceplates[key];
+    forceplate.maxFrontValue = Math.max(forceplate.maxFrontValue * decayFactor, 1);
+    forceplate.maxBackValue = Math.max(forceplate.maxBackValue * decayFactor, 1);
+  });
+}
+
+// Call this function at a regular interval, e.g., every second
+setInterval(decayMaxValues, 1000);
+
+// Update the heatmap with new data points
+function updateHeatmap() {
+  // Clear the existing heatmap data
+  heatmapInstance.setData({ max: 100, min: 0, data: [] });
+
+  // Iterate over each forceplate
+  Object.keys(forceplates).forEach((key) => {
+    let forceplate = forceplates[key];
+    let frontPoint = forceplate.frontSensorPoints[0]; // Assuming one point per sensor for simplicity
+    let backPoint = forceplate.backSensorPoints[0];
+
+    // Create data points with the normalized value
+    let frontDataPoint = { x: frontPoint.x, y: frontPoint.y, value: forceplate.frontSensorValue };
+    let backDataPoint = { x: backPoint.x, y: backPoint.y, value: forceplate.backSensorValue };
+
+    // Add the data points to the heatmap instance
+    heatmapInstance.addData([frontDataPoint, backDataPoint]);
+  });
+}
+
+// Function to add sensor values
+function addSensorValue(side, frontSensorValue, backSensorValue) {
+  // Get the corresponding forceplate
+  let forceplate = forceplates[side];
   if (!forceplate) {
     console.error("Invalid side provided:", side);
-    return; // Exit the function if the side is invalid
+    return;
   }
 
-  // Check if the value from the front sensor exceeds the threshold
-  if (FrontSensor > 20) {
-    const sensorValue = FrontSensor * 0.001;
+  // Calculate normalized values
+  let normalizedFrontValue = frontSensorValue / forceplate.maxFrontValue * 100;
+  let normalizedBackValue = backSensorValue / forceplate.maxBackValue * 100;
 
-    // Determine the point to use based on the frontSensorCounter
-    const point =
-      forceplate.frontSensorPoints[
-        forceplate.frontSensorCounter % forceplate.frontSensorPoints.length
-      ];
-    heatmapTotalValueFront = heatmapTotalValueFront + sensorValue
-    // Create a data point for the heatmap
-    const dataPoint = {
-      x: point.x,
-      y: point.y,
-      value: heatmapTotalValueFront,
-    };
+  // Update the max values if needed
+  forceplate.maxFrontValue = Math.max(forceplate.maxFrontValue, frontSensorValue);
+  forceplate.maxBackValue = Math.max(forceplate.maxBackValue, backSensorValue);
 
-    console.log("DBG: heatmapTotalValueFront when pushing values = ", heatmapTotalValueFront)
+  // Ensure we only add values to the heatmap if they are above the threshold
+  forceplate.frontSensorValue = frontSensorValue > 20 ? normalizedFrontValue : 0;
+  forceplate.backSensorValue = backSensorValue > 20 ? normalizedBackValue : 0;
 
-    // Add the data point to the heatmap instance
-    heatmapInstance.addData(dataPoint);
-    // Increment the counter for the front sensor
-    forceplate.frontSensorCounter++;
-  }
-  else{ //
-
-    const point =
-      forceplate.frontSensorPoints[
-        forceplate.frontSensorCounter % forceplate.frontSensorPoints.length
-      ];
-
-    if (heatmapTotalValueFront > 0)
-      heatmapTotalValueFront = heatmapTotalValueFront - 0.1
-    const dataPoint = {
-      x: point.x,
-      y: point.y,
-      value: heatmapTotalValueFront,
-    };
-
-    console.log("DBG: heatmapTotalValueFront after decrementing values = ", heatmapTotalValueFront)
-
-    // Add the data point to the heatmap instance
-    heatmapInstance.addData(dataPoint);
-  }
-  let heatmapTotalValueBack = 0
-  // Check if the value from the back sensor exceeds the threshold
-  if (BackSensor > 20) {
-    const sensorValue2 = BackSensor * 0.001;
-    // Determine the point to use based on the backSensorCounter
-    const point =
-      forceplate.backSensorPoints[
-        forceplate.backSensorCounter % forceplate.backSensorPoints.length
-      ];
-
-    // Create a data point for the heatmap
-    const dataPoint = {
-      x: point.x,
-      y: point.y,
-      value: sensorValue2,
-    };
-    // Add the data point to the heatmap instance
-    heatmapInstance.addData(dataPoint);
-    // Increment the counter for the back sensor
-    forceplate.backSensorCounter++;
-    // console.log("counter " + forceplate.backSensorCounter);
-  }
-  else{ //
-
-    const point =
-      forceplate.backSensorPoints[
-        forceplate.backSensorCounter % forceplate.backSensorPoints.length
-      ];
-
-    if (heatmapTotalValueBack > 0)
-      heatmapTotalValueBack = heatmapTotalValueBack - 0.1
-    const dataPoint = {
-      x: point.x,
-      y: point.y,
-      value: heatmapTotalValueBack,
-    };
-
-    //console.log("DBG: heatmapTotalValueBack after decrementing values = ", heatmapTotalValueBack)
-
-    // Add the data point to the heatmap instance
-    heatmapInstance.addData(dataPoint);
-  }
+  // Update the heatmap visualization
+  updateHeatmap();
 }
+
+// SIMULATION CODE ///
+let increasing = true; // This flag determines whether the value is increasing or decreasing
+
+function simulateForceApplication() {
+  let currentForce = 0; // Starting force value
+
+  const updateInterval = 25; // How often to update the force value in milliseconds
+  const maxForce = 300; // The maximum force value
+  const increment = (maxForce - 20) / (3000 / updateInterval); // How much to increment each time
+
+  setInterval(() => {
+    // Call the function to update the heatmap with the current force values for both sensors
+    addSensorValue('Chart0010', currentForce, currentForce);
+    addSensorValue('Chart0011', currentForce, currentForce);
+
+    if (increasing) {
+      // If increasing, increment the force value
+      currentForce += increment;
+      if (currentForce >= maxForce) {
+        // Once the maximum is reached, start decreasing
+        increasing = false;
+      }
+    } else {
+      // If decreasing, decrement the force value
+      currentForce -= increment;
+      if (currentForce <= 20) {
+        // Once the minimum is reached, start increasing
+        increasing = true;
+      }
+    }
+    console.log("DBG: currentForce = ", currentForce)
+  }, updateInterval);
+}
+
+// Start the simulation
+simulateForceApplication();
