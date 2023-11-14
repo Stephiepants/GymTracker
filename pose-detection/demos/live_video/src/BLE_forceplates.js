@@ -127,10 +127,19 @@ export async function onStartButtonClick() {
     await acquiredNotifyGATTCharacteristic.startNotifications();
     console.log("> Notify Notifications started");
 
-    acquiredNotifyGATTCharacteristic.addEventListener(
+     //Throttle the handleNotification function so that it's not executed more than once every 100ms
+     const throttledHandleNotification = throttle(handleNotification, 125);
+
+    // Add an event listener to handle incoming notifications
+     acquiredNotifyGATTCharacteristic.addEventListener(
+       "characteristicvaluechanged",
+       throttledHandleNotification
+     );
+
+/*     acquiredNotifyGATTCharacteristic.addEventListener(
       "characteristicvaluechanged",
       handleNotification
-    );
+    ); */
 
     document.querySelector("#start").disabled = true;
     document.querySelector("#stop").disabled = false;
@@ -139,6 +148,25 @@ export async function onStartButtonClick() {
     console.log("Argh! " + error);
   }
 }
+
+ function throttle(func, wait) {
+   let lastFunc;
+   let lastRan;
+   return function (...args) {
+     if (!lastRan) {
+       func.apply(this, args);
+       lastRan = Date.now();
+     } else {
+       clearTimeout(lastFunc);
+       lastFunc = setTimeout(function () {
+         if (Date.now() - lastRan >= wait) {
+           func.apply(this, args);
+           lastRan = Date.now();
+         }
+       }, wait - (Date.now() - lastRan));
+     }
+   };
+ }
 
 export function onWriteButtonClick(valueToWrite) {
   if (acquiredWriteGATTCharacteristic) {
@@ -153,19 +181,29 @@ export function onWriteButtonClick(valueToWrite) {
   }
 }
 
+// Global variables for counting notifications
+let notificationCount = 0;
+let lastSecond = Date.now();
+
 // Event handler for incoming notifications
 function handleNotification(event) {
+  // Increment notification count
+  notificationCount++;
+
   // Handle incoming data from the device
-
-  //Make function to pass "avForce" from both forceplates and pass into chart
-  //Function to update main chart: updateChart(AvgForce, TimeOfEvent);
-
-  // Check if the event object has the expected structure
   if (event.currentTarget.service.device.name == "ForcePlate0011") {
-    //console.log('Received notification event forceplate 0011:', event);
     forcePlateParser.parseSensorData("ForcePlate0011", event);
   } else {
-    //console.log('Received notification event forceplate 0010:', event);
     forcePlateParser.parseSensorData("ForcePlate0010", event);
+  }
+
+  // Check if a second has passed
+  const currentTime = Date.now();
+  if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
+    console.log('Notifications per second:', notificationCount);
+
+    // Reset the count and update the time
+    notificationCount = 0;
+    lastSecond = currentTime;
   }
 }

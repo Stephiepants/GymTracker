@@ -51,7 +51,7 @@ export function parseSensorData(name, event) {
     const chartLabel =
       name === "ForcePlate0011" ? "Right foot (0011)" : "Left foot (0010)";
 
-    addDataPointToHeatmap(chartId, forcePair2, forcePair1),
+    addSensorValue(chartId, forcePair2, forcePair1),
       createOrUpdateThrottledBarChart(
         chartId,
         chartLabel,
@@ -87,7 +87,7 @@ export function parseSensorData(name, event) {
   function handleUpdate(avgForce, time) {
       if (canUpdateChart) {
           // Update the chart
-          console.log("this is the average force" + avgForce);
+          //console.log("this is the average force" + avgForce);
           updateChart(avgForce, time);
 
           // Prevent further updates until the interval passes
@@ -575,7 +575,7 @@ function addSensorValue(side, frontSensorValue, backSensorValue) {
   updateHeatmap();
 }
 
-// SIMULATION CODE ///
+/* // SIMULATION CODE ///
 let increasing = true; // This flag determines whether the value is increasing or decreasing
 
 function simulateForceApplication() {
@@ -610,4 +610,4 @@ function simulateForceApplication() {
 }
 
 // Start the simulation
-simulateForceApplication();
+simulateForceApplication(); */
