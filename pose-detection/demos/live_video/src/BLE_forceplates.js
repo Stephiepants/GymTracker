@@ -127,19 +127,19 @@ export async function onStartButtonClick() {
     await acquiredNotifyGATTCharacteristic.startNotifications();
     console.log("> Notify Notifications started");
 
-     //Throttle the handleNotification function so that it's not executed more than once every 100ms
-     const throttledHandleNotification = throttle(handleNotification, 125);
+     //Throttle the handleNotification function so that it's not executed more than once every 50ms
+     const throttledHandleNotification = throttle(handleNotification, 50);
 
-    // Add an event listener to handle incoming notifications
+    /* // Add an event listener to handle incoming notifications
      acquiredNotifyGATTCharacteristic.addEventListener(
        "characteristicvaluechanged",
        throttledHandleNotification
-     );
+     ); */
 
-/*     acquiredNotifyGATTCharacteristic.addEventListener(
+    acquiredNotifyGATTCharacteristic.addEventListener(
       "characteristicvaluechanged",
       handleNotification
-    ); */
+    );
 
     document.querySelector("#start").disabled = true;
     document.querySelector("#stop").disabled = false;
@@ -181,12 +181,18 @@ export function onWriteButtonClick(valueToWrite) {
   }
 }
 
+// Global timer variable
+export let operationStartTime = null;
+
 // Global variables for counting notifications
 let notificationCount = 0;
 let lastSecond = Date.now();
 
 // Event handler for incoming notifications
 function handleNotification(event) {
+
+  // Start the timer
+  operationStartTime = Date.now();
   // Increment notification count
   notificationCount++;
 
@@ -200,7 +206,7 @@ function handleNotification(event) {
   // Check if a second has passed
   const currentTime = Date.now();
   if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
-    console.log('Notifications per second:', notificationCount);
+    console.log('Events per second:', notificationCount);
 
     // Reset the count and update the time
     notificationCount = 0;

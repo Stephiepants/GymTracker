@@ -1,8 +1,17 @@
 // Define a function to parse sensor data
+import * as BLE_forcePlates from "./BLE_forceplates";
+
 let forcePair1;
 let forcePair2;
 let total = 0;
 let canUpdateChart = true;  // Flag to determine if chart can be updated
+const operationDurationAverage = null
+
+// Global variables for counting notifications
+let ParseCount = 0;
+let lastSecond = Date.now();
+
+
 
 export function parseSensorData(name, event) {
   // Extract the sensor data from the event's buffer
@@ -14,6 +23,8 @@ export function parseSensorData(name, event) {
     //console.log("DBG: StartByte data[0] =! 12, returning null");
     return null; // If it's not 12, return null to indicate an error
   }
+  // Increment notification count
+  ParseCount++;
 
   // Extract the timestamp from the event
   const time = event.timeStamp;
@@ -47,9 +58,32 @@ export function parseSensorData(name, event) {
     // Calculate the total force for this data point
     const totalForce = forcePair1 + forcePair2;
 
+    // Check if the f
+    if (forcePair1 < 10 ||forcePair2 < 10) {
+
+      // At the end of all calculations and chart updates
+      const operationEndTime = Date.now();
+      const operationDuration = operationEndTime - BLE_forcePlates.operationStartTime;
+
+      console.log('Total operation time W/O updating chart: ' + operationDuration + ' ms');
+
+      // Check if a second has passed
+      const currentTime = Date.now();
+      if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
+        console.log('Parses per second w/o updating charts:', ParseCount);
+
+        // Reset the count and update the time
+        ParseCount = 0;
+        lastSecond = currentTime;
+      }
+    return null; //
+    }
+
+
     const chartId = name === "ForcePlate0011" ? "Chart0011" : "Chart0010";
     const chartLabel =
       name === "ForcePlate0011" ? "Right foot (0011)" : "Left foot (0010)";
+
 
     addSensorValue(chartId, forcePair2, forcePair1),
       createOrUpdateThrottledBarChart(
@@ -99,6 +133,22 @@ export function parseSensorData(name, event) {
   }
 
   if(avgForce > 20) handleUpdate(avgForce,time); //Filters out avgforce values below set value
+
+  // At the end of all calculations and chart updates
+  const operationEndTime = Date.now();
+  const operationDuration = operationEndTime - BLE_forcePlates.operationStartTime;
+
+  console.log('Total operation time after running chart code: ' + operationDuration + ' ms');
+
+  // Check if a second has passed
+  const currentTime = Date.now();
+  if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
+    console.log('Parses per second:', ParseCount);
+
+    // Reset the count and update the time
+    ParseCount = 0;
+    lastSecond = currentTime;
+  }
 
   // Return an object containing the parsed values
   return {
@@ -339,7 +389,7 @@ const createOrUpdateThrottledBarChart = throttle(function (
       charts[chartId].update();
   }
 },
-50); // Adjust the throttle delay
+100); // Adjust the throttle delay
 
 
 function resetBarCharts(chartId1, chartId2) {
