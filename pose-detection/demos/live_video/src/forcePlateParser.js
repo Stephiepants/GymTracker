@@ -4,14 +4,12 @@ import * as BLE_forcePlates from "./BLE_forceplates";
 let forcePair1;
 let forcePair2;
 let total = 0;
-let canUpdateChart = true;  // Flag to determine if chart can be updated
-const operationDurationAverage = null
+let canUpdateChart = true; // Flag to determine if chart can be updated
+const operationDurationAverage = null;
 
 // Global variables for counting notifications
 let ParseCount = 0;
 let lastSecond = Date.now();
-
-
 
 export function parseSensorData(name, event) {
   // Extract the sensor data from the event's buffer
@@ -59,31 +57,32 @@ export function parseSensorData(name, event) {
     const totalForce = forcePair1 + forcePair2;
 
     // Check if the f
-    if (forcePair1 < 10 ||forcePair2 < 10) {
-
+    if (forcePair1 < 10 || forcePair2 < 10) {
       // At the end of all calculations and chart updates
       const operationEndTime = Date.now();
-      const operationDuration = operationEndTime - BLE_forcePlates.operationStartTime;
+      const operationDuration =
+        operationEndTime - BLE_forcePlates.operationStartTime;
 
-      console.log('Total operation time W/O updating chart: ' + operationDuration + ' ms');
+      console.log(
+        "Total operation time W/O updating chart: " + operationDuration + " ms"
+      );
 
       // Check if a second has passed
       const currentTime = Date.now();
-      if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
-        console.log('Parses per second w/o updating charts:', ParseCount);
+      if (currentTime - lastSecond >= 1000) {
+        // 1000 milliseconds = 1 second
+        console.log("Parses per second w/o updating charts:", ParseCount);
 
         // Reset the count and update the time
         ParseCount = 0;
         lastSecond = currentTime;
       }
-    return null; //
+      return null; //
     }
-
 
     const chartId = name === "ForcePlate0011" ? "Chart0011" : "Chart0010";
     const chartLabel =
       name === "ForcePlate0011" ? "Right foot (0011)" : "Left foot (0010)";
-
 
     addSensorValue(chartId, forcePair2, forcePair1),
       createOrUpdateThrottledBarChart(
@@ -115,35 +114,45 @@ export function parseSensorData(name, event) {
   // Calculate the average force from the totalForceArr
   const avgForce = calculateAverage(totalForceArr);
 
-  const updateInterval = 100;  // Time in milliseconds (1 second in this case)
+
+  /* const updateInterval = 100; // Time in milliseconds (1 second in this case)
 
   // Function to handle chart updates
   function handleUpdate(avgForce, time) {
-      if (canUpdateChart) {
-          // Update the chart
-          //console.log("this is the average force" + avgForce);
-          updateChart(avgForce, time);
+    if (canUpdateChart) {
+      // Update the chart
+      //console.log("this is the average force" + avgForce);
+      updateChart(avgForce, time);
 
-          // Prevent further updates until the interval passes
-          canUpdateChart = false;
-          setTimeout(() => {
-              canUpdateChart = true;
-          }, updateInterval);
-      }
+      // Prevent further updates until the interval passes
+      canUpdateChart = false;
+      setTimeout(() => {
+        canUpdateChart = true;
+      }, updateInterval);
+    }
   }
 
-  if(avgForce > 20) handleUpdate(avgForce,time); //Filters out avgforce values below set value
+  if (avgForce > 20) handleUpdate(avgForce, time); //Filters out avgforce values below set value */
+
+
+  updateChart(avgForce, time);
 
   // At the end of all calculations and chart updates
   const operationEndTime = Date.now();
-  const operationDuration = operationEndTime - BLE_forcePlates.operationStartTime;
+  const operationDuration =
+    operationEndTime - BLE_forcePlates.operationStartTime;
 
-  console.log('Total operation time after running chart code: ' + operationDuration + ' ms');
+  console.log(
+    "Total operation time after running chart code: " +
+      operationDuration +
+      " ms"
+  );
 
   // Check if a second has passed
   const currentTime = Date.now();
-  if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
-    console.log('Parses per second:', ParseCount);
+  if (currentTime - lastSecond >= 1000) {
+    // 1000 milliseconds = 1 second
+    console.log("Parses per second:", ParseCount);
 
     // Reset the count and update the time
     ParseCount = 0;
@@ -347,10 +356,10 @@ const createOrUpdateThrottledBarChart = throttle(function (
               boxWidth: 0,
               boxHeight: 0,
               font: {
-                size: 20 // Set the font size for labels
-              }
-            }
-          }
+                size: 20, // Set the font size for labels
+              },
+            },
+          },
         },
         scales: {
           y: {
@@ -359,38 +368,37 @@ const createOrUpdateThrottledBarChart = throttle(function (
               stepSize: 50,
               color: "rgb(0, 255, 106)", // Set the font color for y-axis ticks
               font: {
-                size: 20 // Set the font size for y-axis ticks
-              }
-            }
+                size: 20, // Set the font size for y-axis ticks
+              },
+            },
           },
-          x: { // x-axis configuration
+          x: {
+            // x-axis configuration
             ticks: {
               font: {
-                size: 20  // Set the font size for x-axis labels
+                size: 20, // Set the font size for x-axis labels
               },
               color: (context) => {
                 // Check the label of the tick
                 if (context.tick.label === "Backsensor") {
-                  return "rgb(255, 99, 132)";  // Color for "Backsensor"
+                  return "rgb(255, 99, 132)"; // Color for "Backsensor"
                 } else if (context.tick.label === "Frontsensor") {
-                  return "rgb(54, 162, 235)";  // Color for "Frontsensor"
+                  return "rgb(54, 162, 235)"; // Color for "Frontsensor"
                 }
-                return "rgb(0, 0, 0)";  // Default color for other labels (if any)
-              }
-            }
-          }
+                return "rgb(0, 0, 0)"; // Default color for other labels (if any)
+              },
+            },
+          },
         },
       },
     });
   } else {
     // Update the chart data with new values
     charts[chartId].data.datasets[0].data = [back, front];
-    if([back] > 10 || [front] > 10)
-      charts[chartId].update();
+    if ([back] > 10 || [front] > 10) charts[chartId].update();
   }
 },
 100); // Adjust the throttle delay
-
 
 function resetBarCharts(chartId1, chartId2) {
   // Check if the first chart exists and reset it
@@ -462,10 +470,10 @@ const chartConfig = {
           boxWidth: 0,
           boxHeight: 0,
           font: {
-            size: 20 // Set the font size for labels
-          }
-        }
-      }
+            size: 20, // Set the font size for labels
+          },
+        },
+      },
     },
     scales: {
       x: {
@@ -481,22 +489,19 @@ const chartConfig = {
           stepSize: 100,
           color: "rgb(0, 255, 106)", // Set the font color
           font: {
-            size: 25 // Set the font size
-          }
-        }
+            size: 25, // Set the font size
+          },
+        },
       },
     },
   },
 };
-
-
 
 // Create a new Chart.js chart instance using the canvas context and configuration
 const totalForceChart = new Chart(ctx_chart, chartConfig);
 
 /// Function to update the chart with new data or maintain the existing data
 function updateChart(newNumericValue, time) {
-
   // Add the new data point to the chart
   totalForceChart.data.labels.push(time);
   //console.log('DBG: totalForceChart.data.datasets:', totalForceChart.data.datasets[0]);
@@ -506,7 +511,7 @@ function updateChart(newNumericValue, time) {
 }
 
 document.querySelector("#resetCharts").addEventListener("click", function () {
-  resetChart()
+  resetChart();
   resetBarCharts("Chart0010", "Chart0011");
 });
 
@@ -521,8 +526,6 @@ function resetChart() {
   totalForceChart.update();
 }
 
-
-
 /////////////////////HEATMAP CODE/////////////////////////////////
 // // minimal heatmap instance configuration
 var heatmapInstance = h337.create({
@@ -531,7 +534,7 @@ var heatmapInstance = h337.create({
 
   gradient: {
     // Adjust the gradient colors
-    "0": "white",
+    0: "white",
     ".1": "blue",
     ".5": "yellow",
     ".8": "red",
@@ -572,8 +575,14 @@ const decayFactor = 0.95;
 function decayMaxValues() {
   Object.keys(forceplates).forEach((key) => {
     let forceplate = forceplates[key];
-    forceplate.maxFrontValue = Math.max(forceplate.maxFrontValue * decayFactor, 1);
-    forceplate.maxBackValue = Math.max(forceplate.maxBackValue * decayFactor, 1);
+    forceplate.maxFrontValue = Math.max(
+      forceplate.maxFrontValue * decayFactor,
+      1
+    );
+    forceplate.maxBackValue = Math.max(
+      forceplate.maxBackValue * decayFactor,
+      1
+    );
   });
 }
 
@@ -592,8 +601,16 @@ function updateHeatmap() {
     let backPoint = forceplate.backSensorPoints[0];
 
     // Create data points with the normalized value
-    let frontDataPoint = { x: frontPoint.x, y: frontPoint.y, value: forceplate.frontSensorValue };
-    let backDataPoint = { x: backPoint.x, y: backPoint.y, value: forceplate.backSensorValue };
+    let frontDataPoint = {
+      x: frontPoint.x,
+      y: frontPoint.y,
+      value: forceplate.frontSensorValue,
+    };
+    let backDataPoint = {
+      x: backPoint.x,
+      y: backPoint.y,
+      value: forceplate.backSensorValue,
+    };
 
     // Add the data points to the heatmap instance
     heatmapInstance.addData([frontDataPoint, backDataPoint]);
@@ -610,28 +627,34 @@ function addSensorValue(side, frontSensorValue, backSensorValue) {
   }
 
   // Calculate normalized values
-  let normalizedFrontValue = frontSensorValue / forceplate.maxFrontValue * 100;
-  let normalizedBackValue = backSensorValue / forceplate.maxBackValue * 100;
+  let normalizedFrontValue =
+    (frontSensorValue / forceplate.maxFrontValue) * 100;
+  let normalizedBackValue = (backSensorValue / forceplate.maxBackValue) * 100;
 
   // Update the max values if needed
-  forceplate.maxFrontValue = Math.max(forceplate.maxFrontValue, frontSensorValue);
+  forceplate.maxFrontValue = Math.max(
+    forceplate.maxFrontValue,
+    frontSensorValue
+  );
   forceplate.maxBackValue = Math.max(forceplate.maxBackValue, backSensorValue);
 
   // Ensure we only add values to the heatmap if they are above the threshold
-  forceplate.frontSensorValue = frontSensorValue > 20 ? normalizedFrontValue : 0;
+  forceplate.frontSensorValue =
+    frontSensorValue > 20 ? normalizedFrontValue : 0;
   forceplate.backSensorValue = backSensorValue > 20 ? normalizedBackValue : 0;
 
   // Update the heatmap visualization
   updateHeatmap();
 }
 
-/* // SIMULATION CODE ///
+/////////////// SIMULATION CODE ///////////////////
 let increasing = true; // This flag determines whether the value is increasing or decreasing
 
 function simulateForceApplication() {
   let currentForce = 0; // Starting force value
+  let startTime = 0;
 
-  const updateInterval = 25; // How often to update the force value in milliseconds
+  const updateInterval = 200; // How often to update the force value in milliseconds
   const maxForce = 300; // The maximum force value
   const increment = (maxForce - 20) / (3000 / updateInterval); // How much to increment each time
 
@@ -639,6 +662,9 @@ function simulateForceApplication() {
     // Call the function to update the heatmap with the current force values for both sensors
     addSensorValue('Chart0010', currentForce, currentForce);
     addSensorValue('Chart0011', currentForce, currentForce);
+
+    updateChart(currentForce, startTime);
+    startTime++;
 
     if (increasing) {
       // If increasing, increment the force value
@@ -655,9 +681,9 @@ function simulateForceApplication() {
         increasing = true;
       }
     }
-    console.log("DBG: currentForce = ", currentForce)
+    //console.log("DBG: currentForce = ", currentForce)
   }, updateInterval);
 }
 
 // Start the simulation
-simulateForceApplication(); */
+simulateForceApplication();

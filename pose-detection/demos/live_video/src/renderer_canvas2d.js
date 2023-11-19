@@ -317,11 +317,21 @@ export class RendererCanvas2d {
           // The line will be drawn between kp1 and kp2 only if both keypoints have scores above the threshold
 
           ////!!BELOW MODIFIED BY MARCUS (START)!!////
-          if(params.STATE.Exercise == "Bicep curl"){
+          if (params.STATE.Exercise == "Bicep curl") {
+            // Display angle information specific to Bicep Curl
             document.getElementById('angle-display-left-arm').style.display = 'block';
             document.getElementById('angle-display-right-arm').style.display = 'block';
             document.getElementById('angle-display-left-side').style.display = 'none';
             document.getElementById('angle-display-right-side').style.display = 'none';
+        
+            // Hide any other exercise instruction and feedback windows
+            var allExerciseWindows = document.querySelectorAll('.exercise-window');
+            allExerciseWindows.forEach(function(window) {
+                window.style.display = 'none';
+            });
+        
+            // Display the Bicep Curl instruction and feedback window
+            document.querySelector('.exercise-window.bicep-curl').style.display = 'flex';
             // Check if the keypoints being connected are part of the left arm
             if ((i === 5 && j === 7) || (i === 7 && j === 9)) {
               // Calculate the angle between keypoints 5, 7, and 9 (Left shoulder, elbow, wrist)
@@ -371,6 +381,24 @@ export class RendererCanvas2d {
             document.getElementById('angle-display-right-arm').style.display = 'none';
             document.getElementById('angle-display-left-side').style.display = 'block';
             document.getElementById('angle-display-right-side').style.display = 'block';
+
+            if(params.STATE.Exercise == "Squat"){
+            // Hide any other exercise instruction and feedback windows
+            var allExerciseWindows = document.querySelectorAll('.exercise-window');
+            allExerciseWindows.forEach(function(window) {
+                window.style.display = 'none';
+            });
+            // Display the Bicep Curl instruction and feedback window
+            document.querySelector('.exercise-window.squat').style.display = 'flex';
+            }
+            else{
+              var allExerciseWindows = document.querySelectorAll('.exercise-window');
+            allExerciseWindows.forEach(function(window) {
+                window.style.display = 'none';
+            });
+            // Display the Bicep Curl instruction and feedback window
+            document.querySelector('.exercise-window.deadlift').style.display = 'flex';
+            }
             if ((i === 5 && j === 11) || (i === 11 && j === 13)) {
               // Calculate the angle between keypoints 5, 11, and 13 (leftside shoulder, hip, knee)
               const angleLeftShoulderHipKnee = this.calculateAngle(
