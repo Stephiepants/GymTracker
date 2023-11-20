@@ -16,8 +16,9 @@ document.querySelector("#connect").disabled = false;
 document.querySelector("#start").disabled = true;
 document.querySelector("#stop").disabled = true;
 /* document.querySelector("#writeStart").disabled = true;
-document.querySelector("#writeStop").disabled = true */;
-document.querySelector("#writeTare").disabled = true;
+document.querySelector("#writeStop").disabled = true */ document.querySelector(
+  "#writeTare"
+).disabled = true;
 /* document.querySelector("#battery_level").disabled = true; */
 //document.querySelector('#writeGain1').disabled = true
 //document.querySelector('#writeGain2').disabled = true
@@ -82,10 +83,10 @@ export async function onConnectButtonClick() {
     // console.log('> Battery Level is ' + value.getUint8(0) + '%');
 
     document.querySelector("#start").disabled = false;
-   /*  document.querySelector("#writeStart").disabled = false;
+    /*  document.querySelector("#writeStart").disabled = false;
     document.querySelector("#writeStop").disabled = false; */
     document.querySelector("#writeTare").disabled = false;
-   /*  document.querySelector("#battery_level").disabled = false; */
+    /*  document.querySelector("#battery_level").disabled = false; */
   } catch (error) {
     console.log("Argh! " + error);
   }
@@ -127,8 +128,8 @@ export async function onStartButtonClick() {
     await acquiredNotifyGATTCharacteristic.startNotifications();
     console.log("> Notify Notifications started");
 
-     //Throttle the handleNotification function so that it's not executed more than once every 50ms
-     const throttledHandleNotification = throttle(handleNotification, 50);
+    //Throttle the handleNotification function so that it's not executed more than once every 50ms
+    const throttledHandleNotification = throttle(handleNotification, 0);
 
     /* // Add an event listener to handle incoming notifications
      acquiredNotifyGATTCharacteristic.addEventListener(
@@ -149,24 +150,24 @@ export async function onStartButtonClick() {
   }
 }
 
- function throttle(func, wait) {
-   let lastFunc;
-   let lastRan;
-   return function (...args) {
-     if (!lastRan) {
-       func.apply(this, args);
-       lastRan = Date.now();
-     } else {
-       clearTimeout(lastFunc);
-       lastFunc = setTimeout(function () {
-         if (Date.now() - lastRan >= wait) {
-           func.apply(this, args);
-           lastRan = Date.now();
-         }
-       }, wait - (Date.now() - lastRan));
-     }
-   };
- }
+function throttle(func, wait) {
+  let lastFunc;
+  let lastRan;
+  return function (...args) {
+    if (!lastRan) {
+      func.apply(this, args);
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function () {
+        if (Date.now() - lastRan >= wait) {
+          func.apply(this, args);
+          lastRan = Date.now();
+        }
+      }, wait - (Date.now() - lastRan));
+    }
+  };
+}
 
 export function onWriteButtonClick(valueToWrite) {
   if (acquiredWriteGATTCharacteristic) {
@@ -190,7 +191,6 @@ let lastSecond = Date.now();
 
 // Event handler for incoming notifications
 function handleNotification(event) {
-
   // Start the timer
   operationStartTime = Date.now();
   // Increment notification count
@@ -205,8 +205,9 @@ function handleNotification(event) {
 
   // Check if a second has passed
   const currentTime = Date.now();
-  if (currentTime - lastSecond >= 1000) { // 1000 milliseconds = 1 second
-    console.log('Events per second:', notificationCount);
+  if (currentTime - lastSecond >= 1000) {
+    // 1000 milliseconds = 1 second
+    console.log("Events per second:", notificationCount);
 
     // Reset the count and update the time
     notificationCount = 0;

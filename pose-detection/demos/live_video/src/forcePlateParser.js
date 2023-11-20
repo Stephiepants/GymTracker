@@ -1,4 +1,5 @@
 // Define a function to parse sensor data
+// import { buffer } from "stream/consumers";
 import * as BLE_forcePlates from "./BLE_forceplates";
 
 let forcePair1;
@@ -6,10 +7,23 @@ let forcePair2;
 let total = 0;
 let canUpdateChart = true; // Flag to determine if chart can be updated
 const operationDurationAverage = null;
+let meanValueBack = 0;
+let meanValueFront = 0;
+
+const bufferSize = 10; // Size of buffer before updating chart
+
+let sensorDataBuffers = {
+  Chart0011: { front: [], back: [] }, // Buffers for ForcePlate0011
+  Chart0010: { front: [], back: [] }, // Buffers for ForcePlate0010
+};
 
 // Global variables for counting notifications
 let ParseCount = 0;
 let lastSecond = Date.now();
+
+function average(arr) {
+  return arr.reduce((acc, val) => acc + val, 0) / arr.length;
+}
 
 export function parseSensorData(name, event) {
   // Extract the sensor data from the event's buffer
@@ -63,15 +77,15 @@ export function parseSensorData(name, event) {
       const operationDuration =
         operationEndTime - BLE_forcePlates.operationStartTime;
 
-      console.log(
-        "Total operation time W/O updating chart: " + operationDuration + " ms"
-      );
+      // console.log(
+      //   "Total operation time W/O updating chart: " + operationDuration + " ms"
+      // );
 
       // Check if a second has passed
       const currentTime = Date.now();
       if (currentTime - lastSecond >= 1000) {
         // 1000 milliseconds = 1 second
-        console.log("Parses per second w/o updating charts:", ParseCount);
+        //console.log("Parses per second w/o updating charts:", ParseCount);
 
         // Reset the count and update the time
         ParseCount = 0;
@@ -83,14 +97,77 @@ export function parseSensorData(name, event) {
     const chartId = name === "ForcePlate0011" ? "Chart0011" : "Chart0010";
     const chartLabel =
       name === "ForcePlate0011" ? "Right foot (0011)" : "Left foot (0010)";
+    // console.log("this is chartId " + chartId);
+    // Adding the data point to the correct buffer
 
-    addSensorValue(chartId, forcePair2, forcePair1),
+    // console.log("this is the back sensor: " + sensorDataBuffers[chartId].front);
+    // console.log("this is forcepair2: " + forcePair2);
+
+    if (forcePair2 > 10) {
+      // om den framre sensors lägg till datapunkt i arrayn
+
+      sensorDataBuffers[chartId].front.push(forcePair2);
+
+      // console.log(
+      //   "this is the front sensor after pushing: " +
+      //     sensorDataBuffers[chartId].front
+      // );
+    }
+    if (forcePair1 > 10) {
+      sensorDataBuffers[chartId].back.push(forcePair1);
+    }
+
+    // Check if both buffers are ready for processing
+    if (sensorDataBuffers[chartId].front.length >= bufferSize) {
+      meanValueFront = average(sensorDataBuffers[chartId].front);
+
       createOrUpdateThrottledBarChart(
         chartId,
         chartLabel,
-        forcePair1,
-        forcePair2
+        meanValueBack,
+        meanValueFront
       );
+
+      addSensorValue(chartId, meanValueFront, meanValueBack);
+
+      sensorDataBuffers[chartId].front = [];
+    }
+
+    if (sensorDataBuffers[chartId].back.length >= bufferSize) {
+      meanValueBack = average(sensorDataBuffers[chartId].back);
+      // totalForce = meanValueBack + meanValueFront;
+
+      createOrUpdateThrottledBarChart(
+        chartId,
+        chartLabel,
+        meanValueBack,
+        meanValueFront
+      );
+
+      addSensorValue(chartId, meanValueFront, meanValueBack);
+      // Empty array
+      sensorDataBuffers[chartId].back = [];
+
+      // if (forcePair2 > 10) {
+      //   console.log("total force: " + totalForce);
+      //   updateChart(forcePair1 + forcePair2, time);
+      //   totalForce = 0;
+      // }
+    }
+
+    // if (totalForce > 10) {
+    //   updateChart(totalForce, time);
+    //   totalForce = 0;
+    // }
+
+    // Update the chart with both mean values
+
+    //   createOrUpdateThrottledBarChart(
+    //     chartId,
+    //     chartLabel,
+    //     forcePair1,
+    //     forcePair2
+    //   );
 
     ///////// old chart code starts here //////////
     // if (name == "ForcePlate0011") {
@@ -114,8 +191,7 @@ export function parseSensorData(name, event) {
   // Calculate the average force from the totalForceArr
   const avgForce = calculateAverage(totalForceArr);
 
-
-  /* const updateInterval = 100; // Time in milliseconds (1 second in this case)
+  const updateInterval = 200; // Time in milliseconds (1 second in this case)
 
   // Function to handle chart updates
   function handleUpdate(avgForce, time) {
@@ -132,10 +208,13 @@ export function parseSensorData(name, event) {
     }
   }
 
-  if (avgForce > 20) handleUpdate(avgForce, time); //Filters out avgforce values below set value */
-
-
-  updateChart(avgForce, time);
+  if (avgForce > 20) handleUpdate(avgForce, time); //Filters out avgforce values below set value
+  // console.log("total force before: " + totalForce);
+  // if (totalForce > 10) {
+  //   updateChart(totalForce, time);
+  //   totalForce = 0;
+  // }
+  // updateChart(avgForce, time);
 
   // At the end of all calculations and chart updates
   const operationEndTime = Date.now();
@@ -316,7 +395,7 @@ function getChartElement(id) {
 }
 
 // Create or update a throttled bar chart
-const createOrUpdateThrottledBarChart = throttle(function (
+const createOrUpdateThrottledBarChart = function (
   chartId,
   chartLabel,
   back,
@@ -397,8 +476,7 @@ const createOrUpdateThrottledBarChart = throttle(function (
     charts[chartId].data.datasets[0].data = [back, front];
     if ([back] > 10 || [front] > 10) charts[chartId].update();
   }
-},
-100); // Adjust the throttle delay
+};
 
 function resetBarCharts(chartId1, chartId2) {
   // Check if the first chart exists and reset it
@@ -417,26 +495,26 @@ function resetBarCharts(chartId1, chartId2) {
 }
 
 // Throttle function do control how often the chart.update function is being executed
-function throttle(fn, delay) {
-  let lastExecutionTime = 0;
-  let timeoutId;
+// function throttle(fn, delay) {
+//   let lastExecutionTime = 0;
+//   let timeoutId;
 
-  return function (...args) {
-    const currentTime = Date.now();
+//   return function (...args) {
+//     const currentTime = Date.now();
 
-    if (currentTime - lastExecutionTime >= delay) {
-      clearTimeout(timeoutId);
-      lastExecutionTime = currentTime;
-      fn.apply(this, args);
-    } else {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        lastExecutionTime = currentTime;
-        fn.apply(this, args);
-      }, delay);
-    }
-  };
-}
+//     if (currentTime - lastExecutionTime >= delay) {
+//       clearTimeout(timeoutId);
+//       lastExecutionTime = currentTime;
+//       fn.apply(this, args);
+//     } else {
+//       clearTimeout(timeoutId);
+//       timeoutId = setTimeout(() => {
+//         lastExecutionTime = currentTime;
+//         fn.apply(this, args);
+//       }, delay);
+//     }
+//   };
+// }
 
 //Chart-related code below this line
 // Get a reference to the canvas element
@@ -660,8 +738,8 @@ function simulateForceApplication() {
 
   setInterval(() => {
     // Call the function to update the heatmap with the current force values for both sensors
-    addSensorValue('Chart0010', currentForce, currentForce);
-    addSensorValue('Chart0011', currentForce, currentForce);
+    addSensorValue("Chart0010", currentForce, currentForce);
+    addSensorValue("Chart0011", currentForce, currentForce);
 
     updateChart(currentForce, startTime);
     startTime++;
@@ -686,4 +764,4 @@ function simulateForceApplication() {
 }
 
 // Start the simulation
-simulateForceApplication();
+// simulateForceApplication();
