@@ -35,8 +35,6 @@ const COLOR_PALETTE = [
   // Each color corresponds to a specific part of the body
 ];
 
-
-
 // Define a class called RendererCanvas2d for rendering on a 2D canvas
 export class RendererCanvas2d {
   constructor(canvas) {
@@ -155,8 +153,8 @@ export class RendererCanvas2d {
 
     for (const i of keypointInd.middle) {
       if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
-        const keypoint = keypoints[i];
-        this.drawKeypoint(keypoint);
+      const keypoint = keypoints[i];
+      this.drawKeypoint(keypoint);
 
       // Print keypoint values to the console (optional)
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
@@ -165,8 +163,8 @@ export class RendererCanvas2d {
     this.ctx.fillStyle = "Green"; // Set color for left keypoints
     for (const i of keypointInd.left) {
       if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
-        const keypoint = keypoints[i];
-        this.drawKeypoint(keypoint);
+      const keypoint = keypoints[i];
+      this.drawKeypoint(keypoint);
 
       //DBG: Print keypoint values to the console
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
@@ -175,8 +173,8 @@ export class RendererCanvas2d {
     this.ctx.fillStyle = "Orange"; // Set color for right keypoints
     for (const i of keypointInd.right) {
       if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
-        const keypoint = keypoints[i];
-        this.drawKeypoint(keypoint);
+      const keypoint = keypoints[i];
+      this.drawKeypoint(keypoint);
 
       //DBG: Print keypoint values to the console
       //console.log(`Keypoint ${i}: x=${keypoint.x}, y=${keypoint.y}, score=${keypoint.score}`);
@@ -296,8 +294,10 @@ export class RendererCanvas2d {
     this.ctx.lineWidth = params.DEFAULT_LINE_WIDTH;
 
     // Iterate through pairs of keypoints to draw the skeleton
-    posedetection.util.getAdjacentPairs(params.STATE.model).forEach(([i, j]) => {
-      if ([0, 1, 2, 3, 4].includes(i) || [0, 1, 2, 3, 4].includes(j)) return; // Skip drawing lines connected to keypoints 0,1,2,3,4
+    posedetection.util
+      .getAdjacentPairs(params.STATE.model)
+      .forEach(([i, j]) => {
+        if ([0, 1, 2, 3, 4].includes(i) || [0, 1, 2, 3, 4].includes(j)) return; // Skip drawing lines connected to keypoints 0,1,2,3,4
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
 
@@ -318,20 +318,17 @@ export class RendererCanvas2d {
 
           ////!!BELOW MODIFIED BY MARCUS (START)!!////
           if (params.STATE.Exercise == "Bicep curl") {
-            // Display angle information specific to Bicep Curl
-            document.getElementById('angle-display-left-arm').style.display = 'block';
-            document.getElementById('angle-display-right-arm').style.display = 'block';
-            document.getElementById('angle-display-left-side').style.display = 'none';
-            document.getElementById('angle-display-right-side').style.display = 'none';
-        
-            // Hide any other exercise instruction and feedback windows
-            var allExerciseWindows = document.querySelectorAll('.exercise-window');
-            allExerciseWindows.forEach(function(window) {
-                window.style.display = 'none';
-            });
-        
-            // Display the Bicep Curl instruction and feedback window
-            document.querySelector('.exercise-window.bicep-curl').style.display = 'flex';
+            document.getElementById("angle-display-left-arm").style.display =
+              "block";
+            document.getElementById("angle-display-right-arm").style.display =
+              "block";
+            document.getElementById("angle-display-left-side").style.display =
+              "none";
+            document.getElementById("angle-display-right-side").style.display =
+              "none";
+            document.getElementById("infopic2").style.display = "block";
+            document.getElementById("infopic1").style.display = "none";
+            document.getElementById("infopic3").style.display = "none";
             // Check if the keypoints being connected are part of the left arm
             if ((i === 5 && j === 7) || (i === 7 && j === 9)) {
               // Calculate the angle between keypoints 5, 7, and 9 (Left shoulder, elbow, wrist)
@@ -365,40 +362,40 @@ export class RendererCanvas2d {
               );
               angleValueElement.textContent = angleRightArm.toFixed(2); // Display angle with 2 decimal places
 
-            // Change the color based on the angle (you can adjust the angle range as needed)
-            if (angleRightArm >= 15 && angleRightArm <= 150) {
-              this.ctx.strokeStyle = "Green"; // Change the color to green for the right arm
-            } else {
-              this.ctx.strokeStyle = color; // Use the default color
-            }
+              // Change the color based on the angle (you can adjust the angle range as needed)
+              if (angleRightArm >= 15 && angleRightArm <= 150) {
+                this.ctx.strokeStyle = "Green"; // Change the color to green for the right arm
+              } else {
+                this.ctx.strokeStyle = color; // Use the default color
+              }
+            } else this.ctx.strokeStyle = color;
           }
-          else this.ctx.strokeStyle = color;
-          }
 
+          if (params.STATE.Exercise == "Deadlift") {
+            document.getElementById("angle-display-left-arm").style.display =
+              "none";
+            document.getElementById("angle-display-right-arm").style.display =
+              "none";
+            document.getElementById("angle-display-left-side").style.display =
+              "block";
+            document.getElementById("angle-display-right-side").style.display =
+              "block";
+            document.getElementById("infopic2").style.display = "none";
+            document.getElementById("infopic1").style.display = "none";
+            document.getElementById("infopic3").style.display = "block";
+          } else if (params.STATE.Exercise == "Squat") {
+            document.getElementById("angle-display-left-arm").style.display =
+              "none";
+            document.getElementById("angle-display-right-arm").style.display =
+              "none";
+            document.getElementById("angle-display-left-side").style.display =
+              "block";
+            document.getElementById("angle-display-right-side").style.display =
+              "block";
+            document.getElementById("infopic2").style.display = "none";
+            document.getElementById("infopic1").style.display = "block";
+            document.getElementById("infopic3").style.display = "none";
 
-          if(params.STATE.Exercise == "Deadlift" || params.STATE.Exercise == "Squat"){
-            document.getElementById('angle-display-left-arm').style.display = 'none';
-            document.getElementById('angle-display-right-arm').style.display = 'none';
-            document.getElementById('angle-display-left-side').style.display = 'block';
-            document.getElementById('angle-display-right-side').style.display = 'block';
-
-            if(params.STATE.Exercise == "Squat"){
-            // Hide any other exercise instruction and feedback windows
-            var allExerciseWindows = document.querySelectorAll('.exercise-window');
-            allExerciseWindows.forEach(function(window) {
-                window.style.display = 'none';
-            });
-            // Display the Bicep Curl instruction and feedback window
-            document.querySelector('.exercise-window.squat').style.display = 'flex';
-            }
-            else{
-              var allExerciseWindows = document.querySelectorAll('.exercise-window');
-            allExerciseWindows.forEach(function(window) {
-                window.style.display = 'none';
-            });
-            // Display the Bicep Curl instruction and feedback window
-            document.querySelector('.exercise-window.deadlift').style.display = 'flex';
-            }
             if ((i === 5 && j === 11) || (i === 11 && j === 13)) {
               // Calculate the angle between keypoints 5, 11, and 13 (leftside shoulder, hip, knee)
               const angleLeftShoulderHipKnee = this.calculateAngle(
@@ -410,7 +407,8 @@ export class RendererCanvas2d {
               const angleValueElement = document.getElementById(
                 "angle-value-left-knee-hip-shoulder"
               );
-              angleValueElement.textContent = angleLeftShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
+              angleValueElement.textContent =
+                angleLeftShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (
@@ -431,7 +429,8 @@ export class RendererCanvas2d {
               const angleValueElement = document.getElementById(
                 "angle-value-right-knee-hip-shoulder"
               );
-              angleValueElement.textContent = angleRightShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
+              angleValueElement.textContent =
+                angleRightShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (
@@ -443,7 +442,6 @@ export class RendererCanvas2d {
                 this.ctx.strokeStyle = color; // Use the default color
               }
             } else this.ctx.strokeStyle = color; // Use the default color for other lines
-
           }
 
           this.ctx.stroke(); // Draw the line
@@ -644,8 +642,3 @@ document.querySelector("#writeTare").addEventListener("click", function () {
 }); */
 
 /////////////Web BLE END///////////////////////////////////
-
-
-
-
-

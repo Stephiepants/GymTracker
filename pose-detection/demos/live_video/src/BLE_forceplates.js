@@ -129,7 +129,7 @@ export async function onStartButtonClick() {
     console.log("> Notify Notifications started");
 
     //Throttle the handleNotification function so that it's not executed more than once every 50ms
-    const throttledHandleNotification = throttle(handleNotification, 0);
+    // const throttledHandleNotification = throttle(handleNotification, 0);
 
     /* // Add an event listener to handle incoming notifications
      acquiredNotifyGATTCharacteristic.addEventListener(
