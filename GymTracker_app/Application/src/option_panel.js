@@ -190,6 +190,7 @@ function addPoseNetControllers(modelConfigFolder) {
 function addMoveNetControllers(modelConfigFolder, type) {
   params.STATE.modelConfig = { ...params.MOVENET_CONFIG };
   params.STATE.modelConfig.type = type != null ? type : 'lightning';
+  console.log("params.STATE.modelConfig.scoreThreshold = ", params.STATE.modelConfig.scoreThreshold)
 
   // Set defaults
   if (params.STATE.modelConfig.type === 'multipose') {
@@ -218,6 +219,7 @@ function addMoveNetControllers(modelConfigFolder, type) {
     } else {
       enableTrackingController.setValue(false);
     }
+    console.log(" scoreThresholdController = ",  scoreThresholdController)
   });
 
   // Add a controller for a custom model, if applicable.

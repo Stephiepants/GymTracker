@@ -624,10 +624,10 @@ const forceplates = {
   // Information related to forceplate Chart0010
   Chart0010: {
     frontSensorPoints: [
-      { x: 110, y: 110 }, // Coordinates for the Left foot's pinky point
+      { x: 140, y: 115 }, // Coordinates for the Left foot front point
     ],
     backSensorPoints: [
-      { x: 120, y: 225 }, // Coordinates for the Left foot's heel point
+      { x: 140, y: 225 }, // Coordinates for the Left foot's heel point
     ],
     maxFrontValue: 0, // Maximum force value for the front sensor
     maxBackValue: 0, // Maximum force value for the back sensor
@@ -636,10 +636,10 @@ const forceplates = {
   // Information related to forceplate Chart0011
   Chart0011: {
     frontSensorPoints: [
-      { x: 330, y: 110 }, // Coordinates for the Right foot's pinky point
+      { x: 465, y: 115 }, // Coordinates for the Right foot front point
     ],
     backSensorPoints: [
-      { x: 330, y: 225 }, // Coordinates for the Right foot's heel point
+      { x: 465, y: 225 }, // Coordinates for the Right foot's heel point
     ],
     maxFrontValue: 0, // Maximum force value for the front sensor
     maxBackValue: 0, // Maximum force value for the back sensor
@@ -764,4 +764,4 @@ function simulateForceApplication() {
 }
 
 // Start the simulation
-// simulateForceApplication();
+simulateForceApplication();

@@ -24,10 +24,10 @@ limitations under the License.
     <style>
       #heatmap-container {
         position: absolute;
-        width: 450px;
+        width: 600px;
         height: 300px;
-        top: 600px; /* Adjust this value to move the container up */
-        left: 50px; /* Adjust this value to move the container to the right */
+        top: 325px; /* Adjust this value to move the container up */
+        left: 650px; /* Adjust this value to move the container to the right */
       }
 
       #background-image-heatmaps {
@@ -133,24 +133,41 @@ limitations under the License.
       #scatter-gl-container {
         position: relative;
       }
+
+      .angle-display {
+          color: rgb(0, 255, 106);
+          font-size: 30px;
+          margin-top: 10px; /* Adds space below each angle display */
+      }
+
+
+      #angle-display-left-arm, #angle-display-right-arm {
+    padding-left: 130px; /* Specific padding for arm angles */
+      }
+
+      #angle-display-left-side, #angle-display-right-side {
+          padding-left: 35px; /* Specific padding for side angles */
+      }
+
+
       .chart-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 20px;
         position: absolute; /* Added */
-        top: 50px; /* Adjust this value to move up/down */
-        left: 725px; /* Adjust this value to move left/right */
+        top: 100px; /* Adjust this value to move up/down */
+        left: 675px; /* Adjust this value to move left/right */
       }
 
       .totalForceChart-container {
-        height: 300px; /* added 'px' unit */
-        width: 500px; /* added 'px' unit */
+        height: 325px; /* added 'px' unit */
+        width: 550px; /* added 'px' unit */
         margin: auto;
       }
       .canvas-averageForce-style {
-        height: 300px;
-        width: 500px;
+        height: 325px;
+        width: 550px;
         margin: auto;
         border: 3px solid rgb(81, 106, 119); /* Slightly thicker border */
         border-radius: 10px; /* Rounded corners */
@@ -158,8 +175,8 @@ limitations under the License.
         transition: transform 0.2s; /* Smooth transition for hover effect */
       }
       .canvas-common-style {
-        height: 250px;
-        width: 300px;
+        height: 150px;
+        width: 600px;
         margin: auto;
         border: 3px solid rgb(81, 106, 119); /* Slightly thicker border */
         border-radius: 10px; /* Rounded corners */
@@ -176,14 +193,14 @@ limitations under the License.
 
       .canvas-container-0011 {
         height: 250px;
-        width: 300px;
+        width: 275px;
         margin: auto;
         border: 2px solid rgb(81, 106, 119);
       }
 
       .canvas-container-0010 {
         height: 250px;
-        width: 300px;
+        width: 275px;
         margin: auto;
         border: 2px solid rgb(81, 106, 119);
       }
@@ -247,6 +264,27 @@ limitations under the License.
         <button id="resetCharts" disabled>Reset Charts</button>
       </div>
     </div>
+
+    <div class="chart-container">
+      <div
+        class="canvas-container canvas-averageForce-style totalForceChart-container"
+      >
+        <canvas id="totalForceChart"></canvas>
+      </div>
+      <div class="sub-chart-container">
+        <!-- New container for the two bottom charts -->
+        <div
+          class="canvas-container canvas-common-style canvas-container-0010"
+        >
+          <canvas id="Chart0010"></canvas>
+        </div>
+        <div
+          class="canvas-container canvas-common-style canvas-container-0011"
+        >
+          <canvas id="Chart0011"></canvas>
+        </div>
+      </div>
+    </div>
     <!-- <button id="writeStart" disabled>Write "START" to BLE</button>
   <button id="writeStop" disabled>Write "STOP" to BLE</button> -->
     <!-- <button id="battery_level" disabled>Check Battery_level</button> -->
@@ -259,32 +297,23 @@ limitations under the License.
         <div class="canvas-wrapper">
           <!-- Canvas element for rendering output -->
           <canvas id="output"></canvas>
-          <div
-            id="angle-display-left-arm"
-            style="display: none; color: rgb(0, 255, 106); font-size: 24px"
-          >
-            Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees
+
+          <div id="angle-display-left-arm" class="angle-display" style="display: none;">
+              Angle (Left arm): <span id="angle-value-left-arm">0</span> degrees
           </div>
-          <div
-            id="angle-display-right-arm"
-            style="display: none; color: rgb(0, 255, 106); font-size: 24px"
-          >
-            Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees
+
+          <div id="angle-display-right-arm" class="angle-display" style="display: none;">
+              Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees
           </div>
-          <div
-            id="angle-display-left-side"
-            style="display: none; color: rgb(0, 255, 106); font-size: 24px"
-          >
-            Angle (Left knee, hip & shoulder):
-            <span id="angle-value-left-knee-hip-shoulder">0</span> degrees
+
+          <div id="angle-display-left-side" class="angle-display" style="display: none;">
+            Angle (Left knee, hip & shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees
           </div>
-          <div
-            id="angle-display-right-side"
-            style="display: none; color: rgb(0, 255, 106); font-size: 24px"
-          >
-            Angle (Right knee, hip & shoulder):
-            <span id="angle-value-right-knee-hip-shoulder">0</span> degrees
+
+          <div id="angle-display-right-side" class="angle-display" style="display: none;">
+            Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees
           </div>
+
           <!-- Video element for displaying video feed -->
           <video
             id="video"
@@ -300,33 +329,13 @@ limitations under the License.
           <div id="heatmap-container">
             <img
               id="background-image-heatmaps"
-              src="images/feet_heatmap.jpeg"
+              src="images/feet_heatmap.png"
               alt="Background Image"
             />
             <div class="heatmap"></div>
           </div>
           <!-- Container for 3D scatter plot (not visible in this code) -->
           <div id="scatter-gl-container"></div>
-          <div class="chart-container">
-            <div
-              class="canvas-container canvas-averageForce-style totalForceChart-container"
-            >
-              <canvas id="totalForceChart"></canvas>
-            </div>
-            <div class="sub-chart-container">
-              <!-- New container for the two bottom charts -->
-              <div
-                class="canvas-container canvas-common-style canvas-container-0010"
-              >
-                <canvas id="Chart0010"></canvas>
-              </div>
-              <div
-                class="canvas-container canvas-common-style canvas-container-0011"
-              >
-                <canvas id="Chart0011"></canvas>
-              </div>
-            </div>
-          </div>
         </div>
         <!-- !!MODIFIED BY MARCUS!! (END) -->
       </div>

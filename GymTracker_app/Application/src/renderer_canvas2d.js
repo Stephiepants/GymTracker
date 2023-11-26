@@ -35,6 +35,11 @@ const COLOR_PALETTE = [
   // Each color corresponds to a specific part of the body
 ];
 
+const bicepCurlArray = [0, 1, 2, 3, 4, 11, 12, 14, 13, 16, 15];
+const squatArray = [0, 1, 2, 3, 4, 7, 8, 9, 10,15,16];
+const deadliftArray = [0, 1, 2, 3, 4, 7, 8, 9, 10,15,16];
+let keypointsToNotDraw = []
+
 // Define a class called RendererCanvas2d for rendering on a 2D canvas
 export class RendererCanvas2d {
   constructor(canvas) {
@@ -151,8 +156,18 @@ export class RendererCanvas2d {
 
     ////!!MODIFIED BY MARCUS (END)!!////
 
+        // Determine which set of keypoints to use based on the exercise type
+    if (params.STATE.Exercise == "Bicep curl") {
+      keypointsToNotDraw = bicepCurlArray;
+    } else if (params.STATE.Exercise == "Squat") {
+      keypointsToNotDraw = squatArray;
+    } else if (params.STATE.Exercise == "Deadlift") {
+      keypointsToNotDraw = deadliftArray;
+    }
+    //console.log("keypointsToNotDraw = ", keypointsToNotDraw)
+
     for (const i of keypointInd.middle) {
-      if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
+      if (keypointsToNotDraw.includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
       const keypoint = keypoints[i];
       this.drawKeypoint(keypoint);
 
@@ -162,7 +177,7 @@ export class RendererCanvas2d {
 
     this.ctx.fillStyle = "Green"; // Set color for left keypoints
     for (const i of keypointInd.left) {
-      if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
+      if (keypointsToNotDraw.includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
       const keypoint = keypoints[i];
       this.drawKeypoint(keypoint);
 
@@ -172,7 +187,7 @@ export class RendererCanvas2d {
 
     this.ctx.fillStyle = "Orange"; // Set color for right keypoints
     for (const i of keypointInd.right) {
-      if ([0, 1, 2, 3, 4].includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
+      if (keypointsToNotDraw.includes(i)) continue; // Skip drawing keypoints 0,1,2,3,4
       const keypoint = keypoints[i];
       this.drawKeypoint(keypoint);
 
@@ -297,7 +312,20 @@ export class RendererCanvas2d {
     posedetection.util
       .getAdjacentPairs(params.STATE.model)
       .forEach(([i, j]) => {
-        if ([0, 1, 2, 3, 4].includes(i) || [0, 1, 2, 3, 4].includes(j)) return; // Skip drawing lines connected to keypoints 0,1,2,3,4
+        // Skip drawing lines connected to keypoints in the keypointsToNotDraw array
+        if (keypointsToNotDraw.includes(i) || keypointsToNotDraw.includes(j)) return;
+
+        // Additional condition to not draw lines between 5 & 6 and 11 & 12 for Squat and Deadlift
+        if ((params.STATE.Exercise === "Squat" || params.STATE.Exercise === "Deadlift") &&
+            ((i === 5 && j === 6) || (i === 6 && j === 5) || (i === 11 && j === 12) || (i === 12 && j === 11))) {
+            return;
+        }
+
+        // Additional condition to not draw lines between 5 & 6 for bicep curl
+        if ((params.STATE.Exercise === "Bicep curl" ) && ((i === 5 && j === 6) || (i === 6 && j === 5))) {
+            return;
+        }
+
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
 
@@ -341,7 +369,7 @@ export class RendererCanvas2d {
               const angleValueElement = document.getElementById(
                 "angle-value-left-arm"
               );
-              angleValueElement.textContent = angleLeftArm.toFixed(2); // Display angle with 2 decimal places
+              angleValueElement.textContent = angleLeftArm.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (angleLeftArm >= 15 && angleLeftArm <= 150) {
@@ -360,7 +388,7 @@ export class RendererCanvas2d {
               const angleValueElement = document.getElementById(
                 "angle-value-right-arm"
               );
-              angleValueElement.textContent = angleRightArm.toFixed(2); // Display angle with 2 decimal places
+              angleValueElement.textContent = angleRightArm.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (angleRightArm >= 15 && angleRightArm <= 150) {
@@ -382,8 +410,8 @@ export class RendererCanvas2d {
               "block";
             document.getElementById("infopic2").style.display = "none";
             document.getElementById("infopic1").style.display = "none";
-            document.getElementById("infopic3").style.display = "block";
-          } else if (params.STATE.Exercise == "Squat") {
+            document.getElementById("infopic3").style.display = "block";}
+            else if (params.STATE.Exercise == "Squat") {
             document.getElementById("angle-display-left-arm").style.display =
               "none";
             document.getElementById("angle-display-right-arm").style.display =
@@ -395,7 +423,8 @@ export class RendererCanvas2d {
             document.getElementById("infopic2").style.display = "none";
             document.getElementById("infopic1").style.display = "block";
             document.getElementById("infopic3").style.display = "none";
-
+            }
+          if(params.STATE.Exercise == "Deadlift" || params.STATE.Exercise == "Squat"){
             if ((i === 5 && j === 11) || (i === 11 && j === 13)) {
               // Calculate the angle between keypoints 5, 11, and 13 (leftside shoulder, hip, knee)
               const angleLeftShoulderHipKnee = this.calculateAngle(
@@ -408,7 +437,7 @@ export class RendererCanvas2d {
                 "angle-value-left-knee-hip-shoulder"
               );
               angleValueElement.textContent =
-                angleLeftShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
+                angleLeftShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (
@@ -430,7 +459,7 @@ export class RendererCanvas2d {
                 "angle-value-right-knee-hip-shoulder"
               );
               angleValueElement.textContent =
-                angleRightShoulderHipKnee.toFixed(2); // Display angle with 2 decimal places
+                angleRightShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (
