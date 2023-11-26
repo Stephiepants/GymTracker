@@ -20,7 +20,7 @@ https://www.python.org/downloads/
 
 Afterwards follow these steps:
 
-1. Go to the demo folder, e.g. `cd live_video`
+1. Go to the 'Application' folder, e.g. `cd ..\GymTracker\Application`
 
 2. Remove cache etc. `rm -rf .cache dist node_modules`
 

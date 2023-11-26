@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@mediapipe/pose": "~0.4.0",
-    "@tensorflow-models/pose-detection": "file:../../dist",
+    "@tensorflow-models/pose-detection": "file:../dist",
     "@tensorflow/tfjs-backend-wasm": "^4.10.0",
     "@tensorflow/tfjs-backend-webgl": "^4.10.0",
     "@tensorflow/tfjs-backend-webgpu": "^4.10.0",
@@ -24,7 +24,7 @@
     "watch": "cross-env NODE_ENV=development parcel index.html --no-hmr --open",
     "build": "cross-env NODE_ENV=production parcel build index.html --public-url ./",
     "lint": "eslint .",
-    "build-dep": "cd ../../ && yarn && yarn build",
+    "build-dep": "cd ../ && yarn && yarn build",
     "link-core": "yalc link @tensorflow/tfjs-core",
     "link-webgl": "yalc link @tensorflow/tfjs-backend-webgl"
   },
