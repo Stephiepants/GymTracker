@@ -530,7 +530,7 @@ const chartConfig = {
     labels: [], // An array to hold X-axis labels (timestamps or time intervals)
     datasets: [
       {
-        label: "Total Force", // Label for the dataset
+        label: "Total Force [N]", // Label for the dataset
         data: [], // An array to hold numerical data points for the force plate values
         borderColor: "rgb(0, 255, 106)", // Color of the line
         borderWidth: 4, // Width of the line
