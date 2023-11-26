@@ -7,20 +7,20 @@ Try our GymTracker application and get inspired with what you can do with pose-d
 ## How to run the application
 If you want to run the application locally, you need to set up the environment on your computer
 
-First make sure you have node.js, yarn and python installed on your computer. 
+First make sure you have node.js, yarn and python installed on your computer.
 
-To install node.js: 
-https://nodejs.org/en/download 
+To install node.js:
+https://nodejs.org/en/download
 
 To install yarn:
-https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable 
+https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable
 
 To install python:
-https://www.python.org/downloads/ 
+https://www.python.org/downloads/
 
 Afterwards follow these steps:
 
-1. Go to the 'Application' folder, e.g. `cd ..\GymTracker\Application`
+1. Go to the 'Application' folder, e.g. `cd GymTracker/Application`
 
 2. Remove cache etc. `rm -rf .cache dist node_modules`
 
@@ -30,10 +30,10 @@ Afterwards follow these steps:
 
 5. Run the demo. `yarn watch`
 
-6. The demo runs at `localhost:1234`. (Remember to provide URL model parameter e. g. `localhost:1234/?model=movenet`)
+6. The demo runs at `localhost:1234/?model=movenet`
 
 ## Errors mac:
-If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in live_video folder. 
+If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in live_video folder.
 
 ## Errors windows/linux:
 Some users need to install "Visual Studio" with the workload "Desktop development with C++" included.
