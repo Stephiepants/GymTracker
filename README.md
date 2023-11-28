@@ -10,8 +10,11 @@ If you want to run the application locally, you need to set up the environment o
 First make sure you have node.js, yarn and python installed on your computer.
 
 To check if you already have yarn, python and node.js installed on your computer type these one by one in the Terminal/Command-line:
+
 yarn -v 
+
 python -v
+
 node -v
 
 If the software is not found or recognized follow the links below for installation
