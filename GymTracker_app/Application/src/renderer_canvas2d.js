@@ -348,12 +348,12 @@ export class RendererCanvas2d {
           if (params.STATE.Exercise == "Bicep curl") {
             document.getElementById("angle-display-left-arm").style.display =
               "block";
-            document.getElementById("angle-display-right-arm").style.display =
-              "block";
+            /* document.getElementById("angle-display-right-arm").style.display =
+              "block"; */
             document.getElementById("angle-display-left-side").style.display =
               "none";
-            document.getElementById("angle-display-right-side").style.display =
-              "none";
+            /* document.getElementById("angle-display-right-side").style.display =
+              "none"; */
             document.getElementById("infopic2").style.display = "block";
             document.getElementById("infopic1").style.display = "none";
             document.getElementById("infopic3").style.display = "none";
@@ -372,10 +372,10 @@ export class RendererCanvas2d {
               angleValueElement.textContent = angleLeftArm.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
-              if (angleLeftArm >= 15 && angleLeftArm <= 150) {
-                this.ctx.strokeStyle = "Green"; // Change the color to green (you can use any color you like)
+              if (angleLeftArm >= 10 && angleLeftArm <= 150) {
+                this.ctx.strokeStyle = color; // Change the color to green (you can use any color you like)
               } else {
-                this.ctx.strokeStyle = color; // Use the default color
+                this.ctx.strokeStyle = "Green"; // Use the default color
               }
             } else if ((i === 6 && j === 8) || (i === 8 && j === 10)) {
               // Calculate the angle between keypoints 6, 8, and 10 (Right shoulder, elbow, wrist)
@@ -384,17 +384,17 @@ export class RendererCanvas2d {
                 keypoints[8],
                 keypoints[10]
               );
-              // Update the angle value in the HTML element
+             /*  // Update the angle value in the HTML element
               const angleValueElement = document.getElementById(
                 "angle-value-right-arm"
               );
-              angleValueElement.textContent = angleRightArm.toFixed(0); // Display angle with 2 decimal places
+              angleValueElement.textContent = angleRightArm.toFixed(0); // Display angle with 2 decimal places */
 
               // Change the color based on the angle (you can adjust the angle range as needed)
-              if (angleRightArm >= 15 && angleRightArm <= 150) {
-                this.ctx.strokeStyle = "Green"; // Change the color to green for the right arm
+              if (angleRightArm >= 10 && angleRightArm <= 150) {
+                this.ctx.strokeStyle = color; // Change the color to green for the right arm
               } else {
-                this.ctx.strokeStyle = color; // Use the default color
+                this.ctx.strokeStyle = "Green"; // Use the default color
               }
             } else this.ctx.strokeStyle = color;
           }
@@ -402,24 +402,24 @@ export class RendererCanvas2d {
           if (params.STATE.Exercise == "Deadlift") {
             document.getElementById("angle-display-left-arm").style.display =
               "none";
-            document.getElementById("angle-display-right-arm").style.display =
-              "none";
+            /* document.getElementById("angle-display-right-arm").style.display =
+              "none"; */
             document.getElementById("angle-display-left-side").style.display =
               "block";
-            document.getElementById("angle-display-right-side").style.display =
-              "block";
+            /* document.getElementById("angle-display-right-side").style.display =
+              "block"; */
             document.getElementById("infopic2").style.display = "none";
             document.getElementById("infopic1").style.display = "none";
             document.getElementById("infopic3").style.display = "block";}
             else if (params.STATE.Exercise == "Squat") {
             document.getElementById("angle-display-left-arm").style.display =
               "none";
-            document.getElementById("angle-display-right-arm").style.display =
-              "none";
+            /* document.getElementById("angle-display-right-arm").style.display =
+              "none"; */
             document.getElementById("angle-display-left-side").style.display =
               "block";
-            document.getElementById("angle-display-right-side").style.display =
-              "block";
+            /* document.getElementById("angle-display-right-side").style.display =
+              "block"; */
             document.getElementById("infopic2").style.display = "none";
             document.getElementById("infopic1").style.display = "block";
             document.getElementById("infopic3").style.display = "none";
@@ -440,37 +440,49 @@ export class RendererCanvas2d {
                 angleLeftShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
-              if (
-                angleLeftShoulderHipKnee >= 0 &&
-                angleLeftShoulderHipKnee <= 100
-              ) {
-                this.ctx.strokeStyle = "Green"; // Change the color to green for angles between 0 and 100 degrees
-              } else {
-                this.ctx.strokeStyle = color; // Use the default color
+              if (angleLeftShoulderHipKnee >= 12 && angleLeftShoulderHipKnee <= 120 && params.STATE.Exercise == "Squat") { // squat should have 0-120 degrees for red and above green
+                this.ctx.strokeStyle = color; // Change the color to green for angles between 0 and 100 degrees
+                //console.log("DBG: left side SQUAT COLORING ENTERING")
+              } else if(params.STATE.Exercise == "Squat") {
+                this.ctx.strokeStyle = "Green"; // Use the default color
               }
-            } else if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
+              // Change the color based on the angle (you can adjust the angle range as needed)
+              if (angleLeftShoulderHipKnee >= 30 && angleLeftShoulderHipKnee <= 135 && params.STATE.Exercise == "Deadlift") { // squat should have 0-120 degrees for red and above green
+                this.ctx.strokeStyle = color; // Change the color to green for angles between 0 and 100 degrees
+                //console.log("DBG: left side deadlift COLORING ENTERING")
+              } else if(params.STATE.Exercise == "Deadlift") {
+                this.ctx.strokeStyle = "Green"; // Use the default color
+              }
+            }
+            if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
               // Calculate the angle between keypoints 6, 12, and 14 (right shoulder, hip, knee)
               const angleRightShoulderHipKnee = this.calculateAngle(
                 keypoints[6],
                 keypoints[12],
                 keypoints[14]
               );
-              const angleValueElement = document.getElementById(
+              /* const angleValueElement = document.getElementById(
                 "angle-value-right-knee-hip-shoulder"
               );
               angleValueElement.textContent =
-                angleRightShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places
+                angleRightShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places */
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (
-                angleRightShoulderHipKnee >= 0 &&
-                angleRightShoulderHipKnee <= 100
-              ) {
-                this.ctx.strokeStyle = "Green"; // Change the color to green for angles between 0 and 100 degrees
-              } else {
-                this.ctx.strokeStyle = color; // Use the default color
+                angleRightShoulderHipKnee >= 12 && angleRightShoulderHipKnee <= 120 && params.STATE.Exercise == "Squat") {
+                this.ctx.strokeStyle = color; // Change the color to green for angles between 0 and 100 degrees
+                //console.log("DBG: right side SQUAT COLORING ENTERING")
+              } else if(params.STATE.Exercise == "Squat") {
+                this.ctx.strokeStyle = "Green"; // Use the default color
               }
-            } else this.ctx.strokeStyle = color; // Use the default color for other lines
+              if (
+                angleRightShoulderHipKnee >= 30 && angleRightShoulderHipKnee <= 135 && params.STATE.Exercise == "Deadlift") {
+                this.ctx.strokeStyle = color; // Change the color to green for angles between 0 and 100 degrees
+                //console.log("DBG: right side DEADLIFT COLORING ENTERING")
+              } else if(params.STATE.Exercise == "Deadlift") {
+                this.ctx.strokeStyle = "Green"; // Use the default color
+              }
+            } //else this.ctx.strokeStyle = color; // Use the default color for other lines
           }
 
           this.ctx.stroke(); // Draw the line

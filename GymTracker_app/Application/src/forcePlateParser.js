@@ -221,17 +221,17 @@ export function parseSensorData(name, event) {
   const operationDuration =
     operationEndTime - BLE_forcePlates.operationStartTime;
 
-  console.log(
+/*   console.log(
     "Total operation time after running chart code: " +
       operationDuration +
       " ms"
-  );
+  ); */
 
   // Check if a second has passed
   const currentTime = Date.now();
   if (currentTime - lastSecond >= 1000) {
     // 1000 milliseconds = 1 second
-    console.log("Parses per second:", ParseCount);
+    //console.log("Parses per second:", ParseCount);
 
     // Reset the count and update the time
     ParseCount = 0;
@@ -530,7 +530,7 @@ const chartConfig = {
     labels: [], // An array to hold X-axis labels (timestamps or time intervals)
     datasets: [
       {
-        label: "Total Force [N]", // Label for the dataset
+        label: "Total Average Force [N]", // Label for the dataset
         data: [], // An array to hold numerical data points for the force plate values
         borderColor: "rgb(0, 255, 106)", // Color of the line
         borderWidth: 4, // Width of the line
@@ -764,4 +764,4 @@ function simulateForceApplication() {
 }
 
 // Start the simulation
-simulateForceApplication();
+//simulateForceApplication();
