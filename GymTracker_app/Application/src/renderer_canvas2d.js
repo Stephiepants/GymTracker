@@ -354,9 +354,19 @@ export class RendererCanvas2d {
               "none";
             /* document.getElementById("angle-display-right-side").style.display =
               "none"; */
-            document.getElementById("infopic2").style.display = "block";
+            /* document.getElementById("infopic2").style.display = "block";
             document.getElementById("infopic1").style.display = "none";
-            document.getElementById("infopic3").style.display = "none";
+            document.getElementById("infopic3").style.display = "none"; */
+
+            // Hide any other exercise instruction and feedback windows
+            var allExerciseWindows = document.querySelectorAll('.exercise-window');
+            allExerciseWindows.forEach(function(window) {
+                window.style.display = 'none';
+            });
+        
+            // Display the Bicep Curl instruction and feedback window
+            document.querySelector('.exercise-window.bicep-curl').style.display = 'flex';
+
             // Check if the keypoints being connected are part of the left arm
             if ((i === 5 && j === 7) || (i === 7 && j === 9)) {
               // Calculate the angle between keypoints 5, 7, and 9 (Left shoulder, elbow, wrist)
@@ -408,9 +418,17 @@ export class RendererCanvas2d {
               "block";
             /* document.getElementById("angle-display-right-side").style.display =
               "block"; */
-            document.getElementById("infopic2").style.display = "none";
+            /* document.getElementById("infopic2").style.display = "none";
             document.getElementById("infopic1").style.display = "none";
-            document.getElementById("infopic3").style.display = "block";}
+            document.getElementById("infopic3").style.display = "block";} */
+
+            var allExerciseWindows = document.querySelectorAll('.exercise-window');
+              allExerciseWindows.forEach(function(window) {
+                  window.style.display = 'none';
+              });
+              // Display the Bicep Curl instruction and feedback window
+              document.querySelector('.exercise-window.deadlift').style.display = 'flex';
+          }
             else if (params.STATE.Exercise == "Squat") {
             document.getElementById("angle-display-left-arm").style.display =
               "none";
@@ -420,9 +438,18 @@ export class RendererCanvas2d {
               "block";
             /* document.getElementById("angle-display-right-side").style.display =
               "block"; */
-            document.getElementById("infopic2").style.display = "none";
+            /* document.getElementById("infopic2").style.display = "none";
             document.getElementById("infopic1").style.display = "block";
-            document.getElementById("infopic3").style.display = "none";
+            document.getElementById("infopic3").style.display = "none"; */
+
+            // Hide any other exercise instruction and feedback windows
+            var allExerciseWindows = document.querySelectorAll('.exercise-window');
+            allExerciseWindows.forEach(function(window) {
+                window.style.display = 'none';
+            });
+            // Display the Bicep Curl instruction and feedback window
+            document.querySelector('.exercise-window.squat').style.display = 'flex';
+            
             }
           if(params.STATE.Exercise == "Deadlift" || params.STATE.Exercise == "Squat"){
             if ((i === 5 && j === 11) || (i === 11 && j === 13)) {

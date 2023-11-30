@@ -210,7 +210,7 @@ limitations under the License.
         gap: 20px; /* Space between the two charts */
       }
 
-      #infopic1 {
+     /*  #infopic1 {
         display: none;
       }
       #infopic2 {
@@ -221,11 +221,110 @@ limitations under the License.
       }
       .Infoimage {
         position: absolute;
-        height: 700px;
-        width: 620px;
+        height: 250px;
+        width: 250px;
         left: 67%;
         top: 15%;
-      }
+      } */
+
+
+
+          /* Styles for the exercise container */
+    .exercise-container {
+        position: absolute; /* Use absolute positioning to place the container */
+        top: -250px; /* Percentage of the viewport height */
+        right: -15px; /* Percentage of the viewport width */
+        width: auto; /* Set the width as needed */
+        max-width: 33%; /* Prevent the container from getting too wide */
+        margin: 20px; /* Add some margin around the container */
+        color: #ffffff; /* White text for better readability */
+    }
+
+    /* Styles for each exercise window */
+    .exercise-window {
+        display: flex; /* Use flexbox to align children side by side */
+        justify-content: space-around; /* Space out the windows evenly */
+        margin-bottom: 20px; /* Margin between each exercise window set */
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+        padding: 20px; /* Padding inside the container */
+        border-radius: 10px; /* Rounded corners */
+        border: 1px solid #2ecc71; /* Greenish border to match the accent color in the application */
+    }
+
+    /* Styles for each text window (instructions and feedback) */
+    .exercise-window .exercise-instructions{
+        flex: 1; /* Each window takes equal width */
+        padding: 15px; /* Padding inside each window */
+        background-color: transparent; /* Transparent background to blend with the container */
+        margin: 0 10px; /* Margin between instruction and feedback windows */
+        border-left: 3px solid #2ecc71; /* Vertical greenish accent line */
+        border-right: 3px solid #2ecc71; /* Vertical greenish accent line */
+        color: #ffffff; /* White text for better readability */
+        font-size: 1.1em; /* Increase the font size; adjust as needed */
+    }
+
+
+    /* New styles for the container holding the GIFs */
+    .exercise-gifs {
+        display: flex;
+        flex-direction: column; /* Stack the GIFs vertically */
+        justify-content: space-around;
+        align-items: center; /* Center the GIFs */
+        flex: 1; /* Take up 1 portion of the space */
+        padding: 10px;
+        margin-left: 10px; /* Space from the instruction section */
+    }
+
+    /* Styles for each GIF container */
+    .gif {
+        display: flex;
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center; /* Center the items horizontally */
+        justify-content: center; /* Center the items vertically */
+        margin-bottom: 10px;
+        border: 1px solid #2ecc71; /* Border to match the theme */
+        overflow: hidden; /* Add this to contain the image within the border */
+    }
+
+    /* Styles for the <img> within the GIF container */
+    .gif img {
+        width: 150%; /* Increase width to make the image larger */
+        height: 150%; /* Maintain aspect ratio */
+        display: block; /* Ensure the image is a block-level element */
+        margin: auto; /* Center the image in case it overflows */
+    }
+
+
+    /* Styles for the title above each GIF */
+    .gif-title {
+        display: block; /* Makes the span behave like a block element */
+        text-align: center; /* Centers the text */
+        margin-bottom: 5px; /* Space between the title and the GIF */
+        color: #2ecc71; /* Color of the title text */
+        font-size: 1.3em; /* Adjust font size as needed */
+        font-weight: bold; /* Makes the title bold */
+    }
+
+
+    /* Headings inside the instruction and feedback windows */
+    .exercise-window h2 {
+        color: #2ecc71; /* Greenish text to match the theme */
+        margin-bottom: 10px;
+        font-size: 1.5em; /* Increase the font size for headings; adjust as needed */
+    }
+
+    /* Paragraphs inside the instruction and feedback windows */
+    .exercise-window p {
+        line-height: 1.5; /* Improve readability with more line height */
+        color: #ffffff; /* White text for better readability */
+        font-size: 1.3em; /* Increase the font size for paragraphs; adjust as needed */
+        margin-top: 1em; /* Add space above paragraphs if needed */
+    }
+
+    /* Initially hide all exercise windows */
+    .exercise-window {
+        display: none;
+    }
       body {
         background-image: url("https://wallpapercave.com/wp/wp7661163.jpg");
         background-repeat: no-repeat;
@@ -285,6 +384,7 @@ limitations under the License.
         </div>
       </div>
     </div>
+    
     <!-- <button id="writeStart" disabled>Write "START" to BLE</button>
   <button id="writeStop" disabled>Write "STOP" to BLE</button> -->
     <!-- <button id="battery_level" disabled>Check Battery_level</button> -->
@@ -326,6 +426,105 @@ limitations under the License.
               height: auto;
             "
           ></video>
+
+
+          
+          <!-- Exercise Instructions and Feedback Windows -->
+        <div class="exercise-container">
+          <!-- Squat Instructions and Feedback -->
+          <div class="exercise-window squat">
+              <!-- Squat Instructions -->
+              <div class="exercise-instructions">
+                <h2>Squat Instructions</h2>
+                <p>
+                  1.	Place the forceplates one to two steps behind the barbell hip width apart pointing slightly outwards.<br>
+                  2.	Stand upright in front of the barbell with a straight back, chest out and look straight ahead.<br>
+                  3.	Walk under the barbell and position the barbell above or below the shoulder blades, hands shoulder-width apart.<br>
+                  4.	Brace core, lift barbell and step onto force plates with the feet shoulder-width apart and toes slightly outwards, keep the weight evenly on both feet.<br>
+                  5.	Inhale. Sit back as if on a chair, keeping knees aligned with feet, descend until thighs are parallel to the ground.<br>
+                  6.	Exhale slowly while driving up though the hips, maintaining alignment, returning to starting position.<br> 
+
+                </p>
+              </div>
+
+                <!-- Container for GIFs -->
+                <div class="exercise-gifs">
+                  <!-- Correct Way GIF -->
+                  <div class="gif correct-way">
+                      <!-- Placeholder for Correct Way GIF -->
+                      <span class="gif-title">Correct Way</span>
+                      <img src="images/squat_good.gif" alt="Correct way to do Squat">
+                  </div>
+                  <!-- Incorrect Way GIF -->
+                  <div class="gif incorrect-way">
+                      <!-- Placeholder for Incorrect Way GIF -->
+                      <span class="gif-title">Incorrect Way</span>
+                      <img src="images/squat_bad.gif" alt="incorrect way to do Squat">
+                  </div>
+              </div>
+          </div>
+
+          <!-- Deadlift Instructions and Feedback -->
+          <div class="exercise-window deadlift">
+              <!-- Deadlift Instructions -->
+              <div class="exercise-instructions">
+                <h2>Deadlift Instructions</h2>
+                <p>
+                    1.	Place the forceplates one to two steps behind the barbell hip width apart pointing slightly outwards.<br>
+                    2.	Stand upon the forceplates and roll the barbell so mid foot is under the bar.<br>
+                    3.	Bend down, grip the bar just outside legs, using overhand or mixed grip.<br>
+                    4.	Bend knees until chins touch the bar, straighten back, lift chest.<br>
+                    5.	Brace core and press through the legs, keep bar close to legs and weight evenly disturbed on both feet.<br>
+                    6.	Stand upright by pressing the hip forward.<br>
+                    7.	Lower bar to ground by pushing the hips back and bending the knees while keeping a flat back.<br>
+
+                </p>
+              </div>
+
+                <!-- Container for GIFs -->
+                <div class="exercise-gifs">
+                  <!-- Correct Way GIF -->
+                  <div class="gif correct-way">
+                      <!-- Placeholder for Correct Way GIF -->
+                  </div>
+                  <!-- Incorrect Way GIF -->
+                  <div class="gif incorrect-way">
+                      <!-- Placeholder for Incorrect Way GIF -->
+                  </div>
+              </div>
+
+          </div>
+
+          <!-- Bicep Curl Instructions and Feedback -->
+            <div class="exercise-window bicep-curl">
+              <div class="exercise-instructions">
+                  <h2>Bicep Curl Instructions</h2>
+                  <p>
+                    1.	Stand straight, feet slightly apart.<br>
+                    2.	Hold barbell/dumbbells in your hands, palms facing up.<br>
+                    3.	Slightly bend elbows, creating tension in biceps<br>
+                    4.	Slowly curl the barbell/dumbbells upwards as far as possible. Avoid swinging your body.<br>
+                    5.	Squeeze the biceps at the top, then slowly lower the barbell/dumbbells back to the starting position.  <br>                
+                  </p>
+                  <!-- Add more content as needed -->
+              </div>
+
+                <!-- Container for GIFs -->
+                <div class="exercise-gifs">
+                  <!-- Correct Way GIF -->
+                  <div class="gif correct-way">
+                    <span class="gif-title">Correct Way</span>
+                    <img src="images/vlc_1QrckTflmA.gif" alt="Correct way to do Bicep Curl">
+                  </div>
+                  <!-- Incorrect Way GIF -->
+                  <div class="gif incorrect-way">
+                    <span class="gif-title">Incorrect Way</span>
+                    <img src="images/vlc_1QrckTflmA.gif" alt="Incorrect way to do Bicep Curl">
+                  </div>
+              </div>
+          </div>
+
+        </div>
           <div id="heatmap-container">
             <img
               id="background-image-heatmaps"
@@ -340,7 +539,7 @@ limitations under the License.
         <!-- !!MODIFIED BY MARCUS!! (END) -->
       </div>
     </div>
-    <div>
+<!--     <div>
       <img
         id="infopic1"
         src="images/SQUATS.png"
@@ -351,7 +550,7 @@ limitations under the License.
     <div>
       <img
         id="infopic2"
-        src="images/BICEP_CURLS.png"
+        src = "images/vlc_1QrckTflmA.gif"
         alt="BICEP_CURLS-IMAGE"
         class="Infoimage"
       />
@@ -363,7 +562,7 @@ limitations under the License.
         alt="DEAD_LIFT-IMAGE"
         class="Infoimage"
       />
-    </div>
+    </div> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
   </body>
   <!-- Include external JavaScript libraries -->
