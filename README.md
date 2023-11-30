@@ -9,6 +9,16 @@ If you want to run the application locally, you need to set up the environment o
 
 First make sure you have node.js, yarn and python installed on your computer.
 
+To check if you already have yarn, python and node.js installed on your computer type these commands one by one in the Terminal/Command-line:
+
+yarn -v 
+
+python -v
+
+node -v
+
+If the software is not found or recognized follow the links below for installation
+
 To install node.js:
 https://nodejs.org/en/download
 
@@ -33,7 +43,7 @@ Afterwards follow these steps:
 6. The demo runs at `localhost:1234/?model=movenet`
 
 ## Errors mac:
-If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in live_video folder.
+If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in Application folder.
 
 ## Errors windows/linux:
 Some users need to install "Visual Studio" with the workload "Desktop development with C++" included.
