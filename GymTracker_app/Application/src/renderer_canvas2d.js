@@ -35,9 +35,9 @@ const COLOR_PALETTE = [
   // Each color corresponds to a specific part of the body
 ];
 
-const bicepCurlArray = [0, 1, 2, 3, 4, 11, 12, 14, 13, 16, 15];
-const squatArray = [0, 1, 2, 3, 4, 7, 8, 9, 10,15,16];
-const deadliftArray = [0, 1, 2, 3, 4, 7, 8, 9, 10,15,16];
+const bicepCurlArray = [0, 1, 2, 3, 4, 6, 8, 10, 11, 12, 14, 13, 16, 15];
+const squatArray = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 14, 15, 16];
+const deadliftArray = [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 12, 14, 15, 16];
 let keypointsToNotDraw = []
 
 // Define a class called RendererCanvas2d for rendering on a 2D canvas
@@ -317,12 +317,12 @@ export class RendererCanvas2d {
 
         // Additional condition to not draw lines between 5 & 6 and 11 & 12 for Squat and Deadlift
         if ((params.STATE.Exercise === "Squat" || params.STATE.Exercise === "Deadlift") &&
-            ((i === 5 && j === 6) || (i === 6 && j === 5) || (i === 11 && j === 12) || (i === 12 && j === 11))) {
+            ((i === 5 && j === 6) || (i === 6 && j === 5) || (i === 11 && j === 12) || (i === 12 && j === 11) || (i === 6 && j === 12) || (i === 12 && j === 6) || (i === 14 && j === 12) || (i === 12 && j === 14) )) {
             return;
         }
 
         // Additional condition to not draw lines between 5 & 6 for bicep curl
-        if ((params.STATE.Exercise === "Bicep curl" ) && ((i === 5 && j === 6) || (i === 6 && j === 5))) {
+        if ((params.STATE.Exercise === "Bicep curl" ) && ((i === 5 && j === 6) || (i === 6 && j === 5) || (i === 8 && j === 6) || (i === 6 && j === 8) || (i === 8 && j === 11) || (i === 11 && j === 8))) {
             return;
         }
 
@@ -387,26 +387,26 @@ export class RendererCanvas2d {
               } else {
                 this.ctx.strokeStyle = "Green"; // Use the default color
               }
-            } else if ((i === 6 && j === 8) || (i === 8 && j === 10)) {
+            } /* else if ((i === 6 && j === 8) || (i === 8 && j === 10)) {
               // Calculate the angle between keypoints 6, 8, and 10 (Right shoulder, elbow, wrist)
               const angleRightArm = this.calculateAngle(
                 keypoints[6],
                 keypoints[8],
                 keypoints[10]
-              );
+              ); */
              /*  // Update the angle value in the HTML element
               const angleValueElement = document.getElementById(
                 "angle-value-right-arm"
               );
               angleValueElement.textContent = angleRightArm.toFixed(0); // Display angle with 2 decimal places */
 
-              // Change the color based on the angle (you can adjust the angle range as needed)
+              /* // Change the color based on the angle (you can adjust the angle range as needed)
               if (angleRightArm >= 10 && angleRightArm <= 150) {
                 this.ctx.strokeStyle = color; // Change the color to green for the right arm
               } else {
                 this.ctx.strokeStyle = "Green"; // Use the default color
-              }
-            } else this.ctx.strokeStyle = color;
+              } */
+            /* } else this.ctx.strokeStyle = color; */
           }
 
           if (params.STATE.Exercise == "Deadlift") {
@@ -481,18 +481,18 @@ export class RendererCanvas2d {
                 this.ctx.strokeStyle = "Green"; // Use the default color
               }
             }
-            if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
+            /* if ((i === 6 && j === 12) || (i === 12 && j === 14)) {
               // Calculate the angle between keypoints 6, 12, and 14 (right shoulder, hip, knee)
               const angleRightShoulderHipKnee = this.calculateAngle(
                 keypoints[6],
                 keypoints[12],
                 keypoints[14]
               );
-              /* const angleValueElement = document.getElementById(
+              const angleValueElement = document.getElementById(
                 "angle-value-right-knee-hip-shoulder"
               );
               angleValueElement.textContent =
-                angleRightShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places */
+                angleRightShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (
@@ -509,7 +509,7 @@ export class RendererCanvas2d {
               } else if(params.STATE.Exercise == "Deadlift") {
                 this.ctx.strokeStyle = "Green"; // Use the default color
               }
-            } //else this.ctx.strokeStyle = color; // Use the default color for other lines
+            } //else this.ctx.strokeStyle = color; // Use the default color for other lines */
           }
 
           this.ctx.stroke(); // Draw the line

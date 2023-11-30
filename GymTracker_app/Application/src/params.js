@@ -19,8 +19,8 @@ import * as posedetection from '@tensorflow-models/pose-detection'; // Import th
 import { isiOS } from './util'; // Import the 'isiOS' function from a local 'util' file.
 
 // Define some constants for default values in the application.
-export const DEFAULT_LINE_WIDTH = 2; // Define the default line width as 2.
-export const DEFAULT_RADIUS = 4; // Define the default radius as 4.
+export const DEFAULT_LINE_WIDTH = 4; // Define the default line width as 2.
+export const DEFAULT_RADIUS = 3; // Define the default radius as 4.
 
 // Define a set of predefined video size options.
 export const VIDEO_SIZE = {
