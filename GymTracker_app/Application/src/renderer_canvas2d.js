@@ -382,7 +382,7 @@ export class RendererCanvas2d {
               angleValueElement.textContent = angleLeftArm.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
-              if (angleLeftArm >= 10 && angleLeftArm <= 150) {
+              if (angleLeftArm >= 20 && angleLeftArm <= 150) {
                 this.ctx.strokeStyle = color; // Change the color to green (you can use any color you like)
               } else {
                 this.ctx.strokeStyle = "Green"; // Use the default color
@@ -467,14 +467,14 @@ export class RendererCanvas2d {
                 angleLeftShoulderHipKnee.toFixed(0); // Display angle with 2 decimal places
 
               // Change the color based on the angle (you can adjust the angle range as needed)
-              if (angleLeftShoulderHipKnee >= 12 && angleLeftShoulderHipKnee <= 120 && params.STATE.Exercise == "Squat") { // squat should have 0-120 degrees for red and above green
+              if (angleLeftShoulderHipKnee >= 20 && angleLeftShoulderHipKnee <= 120 && params.STATE.Exercise == "Squat") { // squat should have 0-120 degrees for red and above green
                 this.ctx.strokeStyle = color; // Change the color to green for angles between 0 and 100 degrees
                 //console.log("DBG: left side SQUAT COLORING ENTERING")
               } else if(params.STATE.Exercise == "Squat") {
                 this.ctx.strokeStyle = "Green"; // Use the default color
               }
               // Change the color based on the angle (you can adjust the angle range as needed)
-              if (angleLeftShoulderHipKnee >= 30 && angleLeftShoulderHipKnee <= 135 && params.STATE.Exercise == "Deadlift") { // squat should have 0-120 degrees for red and above green
+              if (angleLeftShoulderHipKnee >= 30 && angleLeftShoulderHipKnee <= 110 && params.STATE.Exercise == "Deadlift") { // squat should have 0-120 degrees for red and above green
                 this.ctx.strokeStyle = color; // Change the color to green for angles between 0 and 100 degrees
                 //console.log("DBG: left side deadlift COLORING ENTERING")
               } else if(params.STATE.Exercise == "Deadlift") {

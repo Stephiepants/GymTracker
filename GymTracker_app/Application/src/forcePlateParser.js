@@ -208,7 +208,7 @@ export function parseSensorData(name, event) {
     }
   }
 
-  if (avgForce > 20) handleUpdate(avgForce, time); //Filters out avgforce values below set value
+  //if (avgForce > 20) handleUpdate(avgForce, time); //Filters out avgforce values below set value
   // console.log("total force before: " + totalForce);
   // if (totalForce > 10) {
   //   updateChart(totalForce, time);
@@ -414,8 +414,8 @@ const createOrUpdateThrottledBarChart = function (
             label: chartLabel,
             data: [back, front],
             backgroundColor: [
-              "rgba(255, 99, 132, 0.5)", // Color for the back sensor
-              "rgba(54, 162, 235, 0.5)", // Color for the front sensor
+              "rgba(255, 99, 132, 0.8)", // Color for the back sensor
+              "rgba(54, 162, 235, 0.8)", // Color for the front sensor
             ],
             borderColor: [
               "rgba(255, 99, 132, 1)", // Border color for the back sensor
@@ -518,10 +518,10 @@ function resetBarCharts(chartId1, chartId2) {
 
 //Chart-related code below this line
 // Get a reference to the canvas element
-const chartCanvas = document.getElementById("totalForceChart");
+//const chartCanvas = document.getElementById("totalForceChart");
 
 // Initialize the Chart.js chart with default data
-const ctx_chart = chartCanvas.getContext("2d");
+//const ctx_chart = chartCanvas.getContext("2d");
 
 // Define the configuration for the Chart.js chart
 const chartConfig = {
@@ -575,7 +575,7 @@ const chartConfig = {
   },
 };
 
-// Create a new Chart.js chart instance using the canvas context and configuration
+/* // Create a new Chart.js chart instance using the canvas context and configuration
 const totalForceChart = new Chart(ctx_chart, chartConfig);
 
 /// Function to update the chart with new data or maintain the existing data
@@ -586,10 +586,10 @@ function updateChart(newNumericValue, time) {
   totalForceChart.data.datasets[0].data.push(newNumericValue);
 
   totalForceChart.update();
-}
+} */
 
 document.querySelector("#resetCharts").addEventListener("click", function () {
-  resetChart();
+  //resetChart();
   resetBarCharts("Chart0010", "Chart0011");
 });
 
@@ -740,8 +740,13 @@ function simulateForceApplication() {
     // Call the function to update the heatmap with the current force values for both sensors
     addSensorValue("Chart0010", currentForce, currentForce);
     addSensorValue("Chart0011", currentForce, currentForce);
+    createOrUpdateThrottledBarChart(
+      "Chart0010",
+      "Chart0010",
+      currentForce,
+      currentForce)
 
-    updateChart(currentForce, startTime);
+    //updateChart(currentForce, startTime);
     startTime++;
 
     if (increasing) {
