@@ -414,8 +414,8 @@ const createOrUpdateThrottledBarChart = function (
             label: chartLabel,
             data: [back, front],
             backgroundColor: [
-              "rgba(255, 99, 132, 0.8)", // Color for the back sensor
-              "rgba(54, 162, 235, 0.8)", // Color for the front sensor
+              "rgba(255, 99, 132, 0.6)", // Color for the back sensor
+              "rgba(54, 162, 235, 0.6)", // Color for the front sensor
             ],
             borderColor: [
               "rgba(255, 99, 132, 1)", // Border color for the back sensor
@@ -426,6 +426,8 @@ const createOrUpdateThrottledBarChart = function (
         ],
       },
       options: {
+        responsive: true, // Ensure the chart resizes automatically
+        maintainAspectRatio: false, // Allow the chart to stretch in both dimensions
         animation: false,
         plugins: {
           legend: {
@@ -591,6 +593,7 @@ function updateChart(newNumericValue, time) {
 document.querySelector("#resetCharts").addEventListener("click", function () {
   //resetChart();
   resetBarCharts("Chart0010", "Chart0011");
+  heatmapInstance.setData({ max: 100, min: 0, data: [] });
 });
 
 // Function to reset the chart completely
@@ -608,7 +611,7 @@ function resetChart() {
 // // minimal heatmap instance configuration
 var heatmapInstance = h337.create({
   container: document.querySelector(".heatmap"), // container is required
-  radius: 20,
+  radius: 25,
 
   gradient: {
     // Adjust the gradient colors
@@ -743,6 +746,12 @@ function simulateForceApplication() {
     createOrUpdateThrottledBarChart(
       "Chart0010",
       "Chart0010",
+      currentForce,
+      currentForce)
+
+    createOrUpdateThrottledBarChart(
+      "Chart0011",
+      "Chart0011",
       currentForce,
       currentForce)
 
