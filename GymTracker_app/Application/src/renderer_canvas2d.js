@@ -384,9 +384,20 @@ export class RendererCanvas2d {
               // Change the color based on the angle (you can adjust the angle range as needed)
               if (angleLeftArm >= 20 && angleLeftArm <= 150) {
                 this.ctx.strokeStyle = color; // Change the color to green (you can use any color you like)
-              } else {
+              }
+              else {
                 this.ctx.strokeStyle = "Green"; // Use the default color
               }
+
+              /* // Change the color based on the angle
+              if ((angleLeftArm >= 10 && angleLeftArm <= 20) || (angleLeftArm >= 145 && angleLeftArm <= 160)) {
+                this.ctx.strokeStyle = "Green"; // Color is green for angles between 15-20 and 150-155 degrees
+              } else if ((angleLeftArm >= 0 && angleLeftArm < 10) || (angleLeftArm > 160 && angleLeftArm <= 180)) {
+                this.ctx.strokeStyle = "Red"; // Color is red for angles between 0-15 and 155-180 degrees
+              } else {
+                this.ctx.strokeStyle = "Blue"; // Default color for other angles
+              }
+ */
             } /* else if ((i === 6 && j === 8) || (i === 8 && j === 10)) {
               // Calculate the angle between keypoints 6, 8, and 10 (Right shoulder, elbow, wrist)
               const angleRightArm = this.calculateAngle(

@@ -30,7 +30,7 @@ export function setupStats() {
   const parent = document.getElementById('stats');
 
   // Append the DOM element of the Stats.js object to the 'parent' element.
-  parent.appendChild(stats.domElement);
+  //parent.appendChild(stats.domElement);
 
   // Find all the canvas elements within the 'parent' element.
   const statsPanes = parent.querySelectorAll('canvas');

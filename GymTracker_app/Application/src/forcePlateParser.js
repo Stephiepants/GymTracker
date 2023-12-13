@@ -96,7 +96,7 @@ export function parseSensorData(name, event) {
 
     const chartId = name === "ForcePlate0011" ? "Chart0011" : "Chart0010";
     const chartLabel =
-      name === "ForcePlate0011" ? "Right foot (0011)" : "Left foot (0010)";
+      name === "ForcePlate0011" ? "Right foot" : "Left foot";
     // console.log("this is chartId " + chartId);
     // Adding the data point to the correct buffer
 
@@ -408,7 +408,7 @@ const createOrUpdateThrottledBarChart = function (
     charts[chartId] = new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["Backsensor", "Frontsensor"],
+        labels: ["Back", "Front"],
         datasets: [
           {
             label: chartLabel,
@@ -461,9 +461,9 @@ const createOrUpdateThrottledBarChart = function (
               },
               color: (context) => {
                 // Check the label of the tick
-                if (context.tick.label === "Backsensor") {
+                if (context.tick.label === "Back") {
                   return "rgb(255, 99, 132)"; // Color for "Backsensor"
-                } else if (context.tick.label === "Frontsensor") {
+                } else if (context.tick.label === "Front") {
                   return "rgb(54, 162, 235)"; // Color for "Frontsensor"
                 }
                 return "rgb(0, 0, 0)"; // Default color for other labels (if any)
@@ -608,17 +608,24 @@ function resetChart() {
 }
 
 /////////////////////HEATMAP CODE/////////////////////////////////
-// // minimal heatmap instance configuration
+// minimal heatmap instance configuration
 var heatmapInstance = h337.create({
   container: document.querySelector(".heatmap"), // container is required
   radius: 25,
 
   gradient: {
-    // Adjust the gradient colors
-    0: "white",
-    ".1": "blue",
-    ".5": "yellow",
-    ".8": "red",
+    // Adjust the gradient colors for smoother transitions
+    0.0: "white",   // Minimum value
+    0.1: "lightblue",
+    0.2: "blue",
+    0.3: "green",
+    0.4: "lime",
+    0.5: "yellow",
+    0.6: "orange",
+    0.7: "orangered",
+    0.8: "red",
+    0.9: "red", // Near maximum value
+    1.0: "red"   // Maximum value
   },
 });
 
@@ -668,7 +675,7 @@ function decayMaxValues() {
 }
 
 // Call this function at a regular interval, e.g., every second
-setInterval(decayMaxValues, 1000);
+setInterval(decayMaxValues, 750);
 
 // Update the heatmap with new data points
 function updateHeatmap() {
