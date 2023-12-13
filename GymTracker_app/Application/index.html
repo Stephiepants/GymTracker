@@ -1,0 +1,584 @@
+<!-- Copyright 2021 Google LLC. All Rights Reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Set the character encoding for the document -->
+    <meta charset="utf-8" />
+    <!-- Configure the viewport for responsive design -->
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1.0, user-scalable=no"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
+    <!-- Define some CSS styles -->
+    <style>
+      #heatmap-container {
+        position: absolute;
+        width: 570px;
+        height: 300px;
+        top: 175px; /* Adjust this value to move the container up */
+        left: 660px; /* Adjust this value to move the container to the right */
+      }
+
+      #background-image-heatmaps {
+        width: 100%;
+        height: 100%;
+        position: absolute; /* Position the image absolutely within the relative positioned container */
+        z-index: 1; /* Set the stack order lower than the heatmap */
+      }
+
+      .heatmap {
+        position: absolute; /* Position absolutely within the relative positioned container */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2; /* Set the stack order higher than the image */
+      }
+      .title-container {
+        display: flex; /* Make this container a flexbox container */
+        align-items: center; /* Vertically center the items in the container */
+        position: relative;
+        width: 100%; /* Adjust as needed */
+        height: auto; /* This will allow the container to adjust to the height of its content */
+        padding-left: 0px; /* Adjust this value to bring content closer to the edge */
+        padding-top: 10px; /* This will give space at the top for the title */
+      }
+
+      .title {
+        text-align: center;
+        margin-left: -35px; /* Adjusting the position using margin instead of absolute positioning */
+        z-index: 4;
+      }
+
+      .logo-image {
+        margin-right: 20px; /* Add some space between the image and the title */
+        margin-left: -25px; /* Use a negative margin to pull the image closer to the edge */
+        width: auto; /* Adjust as needed */
+        height: 175px; /* Adjust as needed, this will control the image size */
+        z-index: 4;
+      }
+      .button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align items to the left */
+        margin-left: 25px;
+      }
+      .button-container button {
+        background-color: rgb(52, 152, 219); /* Button color */
+        color: white; /* Text color */
+        padding: 10px 15px; /* Padding around the text */
+        border: none; /* Remove default border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Change cursor to hand icon when hovering */
+        transition: background-color 0.3s; /* Smooth transition for hover effects */
+      }
+
+      .button-container button:hover {
+        background-color: rgb(
+          41,
+          128,
+          185
+        ); /* Darker color when button is hovered over */
+      }
+
+      .button-container button:disabled {
+        background-color: rgb(189, 195, 199); /* Color for disabled buttons */
+        cursor: not-allowed; /* Indicate that button is not clickable */
+      }
+
+      #connect {
+        margin-left: 130px; /* Adjust this value to position the button further or closer to the left */
+      }
+      .bottom-buttons {
+        display: flex; /* Makes the children (buttons) align horizontally */
+        margin-top: 10px; /* Add some space between the 'Connect' button and the other buttons */
+        margin-left: 95px; /* Push the buttons to the right by 50 pixels */
+      }
+      .bottom-buttons button:not(:last-child) {
+        margin-right: 35px;
+      }
+      .bottom-buttons button {
+        margin-left: 5px; /* Space between horizontally aligned buttons */
+        padding: 10px;
+      }
+
+      /* Remove default margin for the body */
+      body {
+        margin: 0;
+      }
+      /* Styling for statistics display (not visible in this code) */
+      #stats {
+        position: relative;
+        width: 100%;
+        height: 80px;
+      }
+      /* Styling for the main content */
+      #main {
+        position: relative;
+        margin: 0;
+      }
+      /* Styling for canvas and scatter plot container */
+      #canvas-wrapper,
+      #scatter-gl-container {
+        position: relative;
+      }
+
+      .angle-display {
+          color: rgb(0, 255, 106);
+          font-size: 32px;
+          margin-top: 15px; /* Adds space below each angle display */
+      }
+
+
+      #angle-display-left-arm, #angle-display-right-arm {
+    padding-left: 130px; /* Specific padding for arm angles */
+      }
+
+      #angle-display-left-side, #angle-display-right-side {
+          padding-left: 35px; /* Specific padding for side angles */
+      }
+
+
+      .chart-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        position: absolute; /* Added */
+        top: 325px; /* Adjust this value to move up/down */
+        left: 665px; /* Adjust this value to move left/right */
+      }
+
+      .totalForceChart-container {
+        height: 325px; /* added 'px' unit */
+        width: 550px; /* added 'px' unit */
+        margin: auto;
+      }
+      .canvas-averageForce-style {
+        height: 325px;
+        width: 550px;
+        margin: auto;
+        border: 3px solid rgb(81, 106, 119); /* Slightly thicker border */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+        transition: transform 0.2s; /* Smooth transition for hover effect */
+      }
+      .canvas-common-style {
+        height: 150px;
+        width: 600px;
+        margin: auto;
+        border: 3px solid rgb(81, 106, 119); /* Slightly thicker border */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
+        transition: transform 0.2s; /* Smooth transition for hover effect */
+      }
+
+      .canvas-averageForce-style:hover {
+        transform: scale(1.03); /* Slight zoom on hover */
+      }
+      .canvas-common-style:hover {
+        transform: scale(1.03); /* Slight zoom on hover */
+      }
+
+      .canvas-container-0011 {
+        height: 195px;
+        width: 275px;
+        margin: auto;
+        border: 2px solid rgb(81, 106, 119);
+        background: rgba(0, 0, 0, 0.9); /* Example: white background with 50% opacity */
+      }
+
+      .canvas-container-0010 {
+        height: 195px;
+        width: 275px;
+        margin: auto;
+        border: 2px solid rgb(81, 106, 119);
+        background: rgba(0, 0, 0, 0.9); /* Example: white background with 50% opacity */
+      }
+
+      .sub-chart-container {
+        display: flex; /* Aligns its children side by side */
+        gap: 20px; /* Space between the two charts */
+      }
+
+     /*  #infopic1 {
+        display: none;
+      }
+      #infopic2 {
+        display: none;
+      }
+      #infopic3 {
+        display: none;
+      }
+      .Infoimage {
+        position: absolute;
+        height: 250px;
+        width: 250px;
+        left: 67%;
+        top: 15%;
+      } */
+
+
+
+          /* Styles for the exercise container */
+    .exercise-container {
+        position: absolute; /* Use absolute positioning to place the container */
+        top: -250px; /* Percentage of the viewport height */
+        right: -15px; /* Percentage of the viewport width */
+        width: auto; /* Set the width as needed */
+        max-width: 33%; /* Prevent the container from getting too wide */
+        margin: 20px; /* Add some margin around the container */
+        color: #ffffff; /* White text for better readability */
+    }
+
+    /* Styles for each exercise window */
+    .exercise-window {
+        display: flex; /* Use flexbox to align children side by side */
+        justify-content: space-around; /* Space out the windows evenly */
+        margin-bottom: 20px; /* Margin between each exercise window set */
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+        padding: 20px; /* Padding inside the container */
+        border-radius: 10px; /* Rounded corners */
+        border: 1px solid #2ecc71; /* Greenish border to match the accent color in the application */
+    }
+
+    /* Styles for each text window (instructions and feedback) */
+    .exercise-window .exercise-instructions{
+        flex: 1; /* Each window takes equal width */
+        padding: 15px; /* Padding inside each window */
+        background-color: transparent; /* Transparent background to blend with the container */
+        margin: 0 10px; /* Margin between instruction and feedback windows */
+        border-left: 3px solid #2ecc71; /* Vertical greenish accent line */
+        border-right: 3px solid #2ecc71; /* Vertical greenish accent line */
+        color: #ffffff; /* White text for better readability */
+        font-size: 1.1em; /* Increase the font size; adjust as needed */
+    }
+
+    /* Headings inside the instruction and feedback windows */
+    .exercise-window h2 {
+        color: #2ecc71; /* Greenish text to match the theme */
+        margin-bottom: 10px;
+        font-size: 1.4em; /* Increase the font size for headings; adjust as needed */
+    }
+
+    /* Paragraphs inside the instruction and feedback windows */
+    .exercise-window p {
+        line-height: 1.5; /* Improve readability with more line height */
+        color: #ffffff; /* White text for better readability */
+        font-size: 1.3em; /* Increase the font size for paragraphs; adjust as needed */
+        margin-top: 1em; /* Add space above paragraphs if needed */
+    }
+
+    /* New styles for the container holding the GIFs */
+    .exercise-gifs {
+        display: flex;
+        flex-direction: column; /* Stack the GIFs vertically */
+        justify-content: space-around;
+        align-items: center; /* Center the GIFs */
+        flex: 1; /* Take up 1 portion of the space */
+        padding: 0px;
+        margin-left: 5px; /* Space from the instruction section */
+    }
+
+    /* Styles for each GIF container */
+    .gif {
+        display: flex;
+        flex-direction: column; /* Stack elements vertically */
+        align-items: center; /* Center the items horizontally */
+        justify-content: center; /* Center the items vertically */
+        /* background-color: #ddd; /* Placeholder color, remove when adding actual GIFs */
+        margin-bottom: 10px;
+        border: 1px solid #2ecc71; /* Border to match the theme */
+        overflow: hidden; /* To see if the image is actually enlarging but getting clipped */
+    }
+
+    /* Styles for the <img> within the GIF container */
+    .gif img {
+      width: 100%; /* Increase width to make the image larger */
+      height: auto; /* Maintain aspect ratio */
+      display: block; /* Ensure the image is a block-level element */
+      margin: auto; /* Center the image in case it overflows */
+    }
+
+
+    /* Styles for the title above each GIF */
+    .gif-title {
+        display: block; /* Makes the span behave like a block element */
+        text-align: center; /* Centers the text */
+        margin-bottom: 5px; /* Space between the title and the GIF */
+        color: #2ecc71; /* Color of the title text */
+        font-size: 1.3em; /* Adjust font size as needed */
+        font-weight: bold; /* Makes the title bold */
+    }
+
+        /* Style for 'Correct' title */
+    .correct-title {
+        color: #28a745; /* Example color - green */
+        /* Other styles if needed */
+    }
+
+    /* Style for 'Incorrect' title */
+    .incorrect-title {
+        color: #dc3545; /* Example color - red */
+        /* Other styles if needed */
+    }
+    
+    /* Initially hide all exercise windows */
+    .exercise-window {
+        display: none;
+    }
+
+
+      body {
+        background-image: url("https://wallpapercave.com/wp/wp7661163.jpg");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+    </style>
+    <!-- !!BELOW MODIFIED BY MARCUS!! (START) -->
+    <!-- !!MODIFIED BY MARCUS!! (END) -->
+  </head>
+  <body>
+    <div class="title-container">
+      <img
+        src="images/gymtracker_logo.png"
+        alt="GymTracker Logo"
+        class="logo-image"
+      />
+
+      <div class="title">
+        <h1 style="color: rgb(81, 106, 119)">GymTracker</h1>
+        <h3 style="color: rgb(81, 106, 119)">
+          Your Personal Training Analyzer
+        </h3>
+      </div>
+    </div>
+
+    <div id="stats"></div>
+    <!-- Statistics display (not visible in this code) -->
+
+    <div class="button-container">
+      <button id="connect" disabled>Connect to ForcePlates</button>
+      <div class="bottom-buttons">
+        <button id="start" disabled>Start</button>
+        <button id="writeTare" disabled>"Zero"</button>
+        <button id="stop" disabled>Stop</button>
+        <button id="resetCharts" disabled>Reset Charts</button>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <!-- <div
+        class="canvas-container canvas-averageForce-style totalForceChart-container">
+        <canvas id="totalForceChart"></canvas>
+      </div> -->
+      <div class="sub-chart-container">
+        <!-- New container for the two bottom charts -->
+        <div
+          class="canvas-container canvas-common-style canvas-container-0010"
+        >
+          <canvas id="Chart0010"></canvas>
+        </div>
+        <div
+          class="canvas-container canvas-common-style canvas-container-0011"
+        >
+          <canvas id="Chart0011"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- <button id="writeStart" disabled>Write "START" to BLE</button>
+  <button id="writeStop" disabled>Write "STOP" to BLE</button> -->
+    <!-- <button id="battery_level" disabled>Check Battery_level</button> -->
+
+    <!-- Main content container -->
+    <div id="main">
+      <!-- Container for various elements -->
+      <div class="container">
+        <!-- Container for canvas and video elements -->
+        <div class="canvas-wrapper">
+          <!-- Canvas element for rendering output -->
+          <canvas id="output"></canvas>
+
+          <div id="angle-display-left-arm" class="angle-display" style="display: none;">
+              Angle (Arm): <span id="angle-value-left-arm">0</span> degrees
+          </div>
+
+          <!-- <div id="angle-display-right-arm" class="angle-display" style="display: none;">
+              Angle (Right arm): <span id="angle-value-right-arm">0</span> degrees
+          </div> -->
+
+          <div id="angle-display-left-side" class="angle-display" style="display: none;">
+            Angle (Knee, Hip & Shoulder): <span id="angle-value-left-knee-hip-shoulder">0</span> degrees
+          </div>
+
+          <!-- <div id="angle-display-right-side" class="angle-display" style="display: none;">
+            Angle (Right knee, hip & shoulder): <span id="angle-value-right-knee-hip-shoulder">0</span> degrees
+          </div> -->
+
+          <!-- Video element for displaying video feed -->
+          <video
+            id="video"
+            playsinline
+            style="
+              -webkit-transform: scaleX(-1);
+              transform: scaleX(-1);
+              visibility: hidden;
+              width: auto;
+              height: auto;
+            "
+          ></video>
+
+
+          
+          <!-- Exercise Instructions and Feedback Windows -->
+        <div class="exercise-container">
+          <!-- Squat Instructions and Feedback -->
+          <div class="exercise-window squat">
+              <!-- Squat Instructions -->
+              <div class="exercise-instructions">
+                <h2>Squat Instructions</h2>
+                <p>
+                  1. Stand with feet shoulder-width apart, toes slightly out.<br>
+                  2. Brace core, keep chest up, look straight ahead.<br>
+                  3. Push hips back, bend knees, squat down, keeping knees over toes.<br>
+                  4. Squat until hips are below knees.<br>
+                  5. Keep weight evenly on the feets and push to stand back up, straightening hips and knees.<br>
+                </p>
+              </div>
+
+                <!-- Container for GIFs -->
+                <div class="exercise-gifs">
+                  <!-- Correct Way GIF -->
+                  <div class="gif correct-way">
+                      <!-- Placeholder for Correct Way GIF -->
+                      <span class="gif-title correct-title">Correct</span>
+                      <img src="images/squat_good.gif" alt="Correct way to do Squat">
+                  </div>
+                  <!-- Incorrect Way GIF -->
+                  <div class="gif incorrect-way">
+                      <!-- Placeholder for Incorrect Way GIF -->
+                      <span class="gif-title incorrect-title">Incorrect</span>
+                      <img src="images/squat_bad.gif" alt="incorrect way to do Squat">
+                  </div>
+              </div>
+          </div>
+
+          <!-- Deadlift Instructions and Feedback -->
+          <div class="exercise-window deadlift">
+              <!-- Deadlift Instructions -->
+              <div class="exercise-instructions">
+                <h2>Deadlift Instructions</h2>
+                <p>
+                  1. Stand with feet hip-width apart, mid-foot under barbell.<br>
+                  2. Grip bar at shoulder-width. Lean down, shoulders higher than hips, hips higher than the knees.<br>
+                  3. Keep back straight, lift by straightening legs, driving hips forward.<br>
+                  4. Lift barbell to hip level, stand tall, shoulders back.<br>
+                  5. Lower bar to ground, bending hips and knees, maintaining a flat back.<br>
+                </p>
+              </div>
+
+                <!-- Container for GIFs -->
+                <div class="exercise-gifs">
+                  <!-- Correct Way GIF -->
+                  <div class="gif correct-way">
+                      <!-- Placeholder for Correct Way GIF -->
+                      <span class="gif-title correct-title">Correct</span>
+                      <img src="images/deadlift_good.gif" alt="Correct way to do Deadlift">
+                  </div>
+                  <!-- Incorrect Way GIF -->
+                  <div class="gif incorrect-way">
+                      <!-- Placeholder for Incorrect Way GIF -->
+                      <span class="gif-title incorrect-title">Incorrect</span>
+                      <img src="images/deadlift_bad.gif" alt="incorrect way to do Deadlift">
+                  </div>
+              </div>
+
+          </div>
+
+          <!-- Bicep Curl Instructions and Feedback -->
+            <div class="exercise-window bicep-curl">
+              <div class="exercise-instructions">
+                  <h2>Bicep Curl Instructions</h2>
+                  <p>
+                    1.	Stand straight, feet slightly apart.<br>
+                    2.	Hold barbell/dumbbells in your hands, palms facing up.<br>
+                    3.	Slowly curl the barbell/dumbbells upwards as far as possible. Avoid swinging your body.<br>
+                    4.	Squeeze the biceps at the top, then slowly lower the barbell/dumbbells back to the starting position. <br>                
+                  </p>
+              </div>
+
+                <!-- Container for GIFs -->
+                <div class="exercise-gifs">
+                  <!-- Correct Way GIF -->
+                  <div class="gif correct-way">
+                    <span class="gif-title correct-title">Correct</span>
+                    <img src="images/bicep_good.gif" alt="Correct way to do Bicep Curl">
+                  </div>
+                  <!-- Incorrect Way GIF -->
+                  <div class="gif incorrect-way">
+                    <span class="gif-title incorrect-title">Incorrect</span>
+                    <img src="images/bicep_bad.gif" alt="Incorrect way to do Bicep Curl">
+                  </div>
+              </div>
+          </div>
+
+        </div>
+          <div id="heatmap-container">
+            <img
+              id="background-image-heatmaps"
+              src="images/feet_heatmap.png"
+              alt="Background Image"
+            />
+            <div class="heatmap"></div>
+          </div>
+          <!-- Container for 3D scatter plot (not visible in this code) -->
+          <div id="scatter-gl-container"></div>
+        </div>
+        <!-- !!MODIFIED BY MARCUS!! (END) -->
+      </div>
+    </div>
+<!--     <div>
+      <img
+        id="infopic1"
+        src="images/SQUATS.png"
+        alt="SQUATS-IMAGE"
+        class="Infoimage"
+      />
+    </div>
+    <div>
+      <img
+        id="infopic2"
+        src = "images/vlc_1QrckTflmA.gif"
+        alt="BICEP_CURLS-IMAGE"
+        class="Infoimage"
+      />
+    </div>
+    <div>
+      <img
+        id="infopic3"
+        src="images/DEAD_LIFT.png"
+        alt="DEAD_LIFT-IMAGE"
+        class="Infoimage"
+      />
+    </div> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  </body>
+  <!-- Include external JavaScript libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.6/dat.gui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r16/Stats.min.js"></script>
+  <!-- Include your custom JavaScript file (index.js) for functionality -->
+  <script src="src/index.js"></script>
+</html>

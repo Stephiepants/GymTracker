@@ -1,7 +1,7 @@
 #!/bin/bash
 
-git pull
-cd ./pose-detection/demos/live_video
+#git pull
+cd GymTracker/GymTracker_app/Application
 rm -rf .cache dist node_modules
 yarn build-dep
 yarn
