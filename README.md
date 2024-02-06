@@ -43,7 +43,7 @@ Afterwards follow these steps:
 6. The demo runs at `localhost:1234/?model=movenet`
 
 ## Errors mac:
-If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and noduel_module file in Application folder.
+If you encounter errors during step 5 and you have a mac you can try to remove the yarn.lock, package-lock.json and node_module file in Application folder.
 
 ## Errors windows/linux:
 Some users need to install "Visual Studio" with the workload "Desktop development with C++" included.
